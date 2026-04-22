@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPages isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
+          <Route path="/" element={<LoginPages isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
           <Route path="/home" element={<Protected isSignedIn={isSignedIn} ><PaginaInicio /></Protected>} />
         </Routes>
       </BrowserRouter>

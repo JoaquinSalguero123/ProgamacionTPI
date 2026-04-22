@@ -1,0 +1,409 @@
+/* ============================================================
+   LoginPages.css — The Atelier
+   Fiel al diseño del HTML de referencia
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --color-primary:               #775a19;
+  --color-primary-container:     #c5a059;
+  --color-primary-fixed-dim:     #e9c176;
+  --color-on-primary:            #ffffff;
+  --color-surface:               #f9f9f9;
+  --color-surface-container-low: #f3f3f3;
+  --color-on-surface:            #1a1c1c;
+  --color-on-surface-variant:    #4e4639;
+  --color-outline:               #7f7667;
+  --color-outline-variant:       #d1c5b4;
+  --color-inverse-surface:       #2f3131;
+
+  --font-headline: 'Noto Serif', Georgia, serif;
+  --font-body:     'Manrope', sans-serif;
+
+  --radius-full: 9999px;
+  --editorial-shadow: 0 40px 100px -20px rgba(26, 28, 28, 0.08);
+}
+
+/* ── Reset / Base ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Layout ────────────────────────────────────────────────── */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    flex-direction: row;
+  }
+}
+
+/* ── Left Panel ────────────────────────────────────────────── */
+.panel-left {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background-color: var(--color-inverse-surface);
+
+  /* Imagen de fondo */
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCsB-FRUebu3_g7FLhoMryjF7ixsgfVBAwejJ-g8AsY_BcmmLUVg7j4_-IKKyxAjAppU_N5YRbFMZSn4IKXECi1JZRrc3yU8OP1OllTXMdn6tJBTcrYlqI1kl3Z6sXJtR5wbLdgEpTLufFrXpeFUp9ijo2ViamAQASlXDPNBpMrND77C8Goeef_p1-VvybNxfT4fLyptqjztvU0r13je1-JjupcdsY546aaICbPNYQNdJ98Cd5vTipagZNIF3MRpG8IIIjAEYhaL58');
+  background-size: cover;
+  background-position: center;
+}
+
+@media (min-width: 768px) {
+  .panel-left {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .panel-left {
+    width: 60%;
+  }
+}
+
+/* Overlay degradado sobre la imagen */
+.panel-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(47, 49, 49, 0.4), transparent);
+  pointer-events: none;
+}
+
+/* Marca fija en esquina superior izquierda (solo lg+) */
+.brand {
+  position: fixed;
+  top: 3rem;
+  left: 3rem;
+  z-index: 20;
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--color-surface);
+  mix-blend-mode: difference;
+  opacity: 0.5;
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .brand {
+    display: block;
+  }
+}
+
+/* Copy hero (parte inferior del panel) */
+.hero-copy {
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+  padding: 4rem;
+  max-width: 42rem;
+}
+
+@media (min-width: 1024px) {
+  .hero-copy {
+    padding: 6rem;
+  }
+}
+
+.hero-copy h1 {
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  color: var(--color-surface);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.hero-copy p {
+  color: rgba(249, 249, 249, 0.8);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  max-width: 28rem;
+}
+
+/* ── Right Panel ───────────────────────────────────────────── */
+.panel-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 2rem;
+  background-color: var(--color-surface);
+}
+
+@media (min-width: 1024px) {
+  .panel-right {
+    padding: 3rem 6rem;
+  }
+}
+
+/* ── Mobile brand (hidden on md+) ─────────────────────────── */
+.mobile-brand {
+  display: block;
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 1.875rem;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .mobile-brand {
+    display: none;
+  }
+}
+
+/* ── Inner card / max-width container ─────────────────────── */
+.panel-right > * {
+  width: 100%;
+  max-width: 28rem;
+}
+
+/* ── Form Header ───────────────────────────────────────────── */
+.form-header {
+  margin-bottom: 3rem;
+}
+
+.form-header h2 {
+  font-family: var(--font-headline);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  color: var(--color-on-surface);
+  margin-bottom: 0.5rem;
+}
+
+.form-header p {
+  color: var(--color-on-surface-variant);
+  font-weight: 300;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* ── Form ──────────────────────────────────────────────────── */
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ── Fields ────────────────────────────────────────────────── */
+.field {
+  position: relative;
+}
+
+.field label {
+  display: block;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.field:focus-within label {
+  color: var(--color-primary);
+}
+
+.field input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-outline-variant);
+  border-radius: 0;
+  padding: 0.75rem 0;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-shadow: none;
+}
+
+.field input::placeholder {
+  color: rgba(26, 28, 28, 0.2);
+}
+
+.field input:focus {
+  border-bottom-color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* Field top row (label + forgot link) */
+.field-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.field-top a {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.field-top a:hover {
+  opacity: 0.7;
+}
+
+/* Password wrapper */
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap input {
+  padding-right: 2rem;
+}
+
+.toggle-pw {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(78, 70, 57, 0.4);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.2s ease;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.toggle-pw:hover {
+  color: var(--color-primary);
+}
+
+/* ── Form Actions ──────────────────────────────────────────── */
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+/* Primary button — gold gradient */
+.form-actions button[type="submit"] {
+  background: linear-gradient(135deg, #775a19 0%, #c5a059 100%);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 700;
+  padding: 1.25rem 2.5rem;
+  border-radius: var(--radius-full);
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: var(--editorial-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-actions button[type="submit"]:hover {
+  transform: scale(1.02);
+  box-shadow: 0 50px 120px -20px rgba(119, 90, 25, 0.25);
+}
+
+.form-actions button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* Divider with text */
+.form-actions p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body);
+}
+
+.form-actions p::before,
+.form-actions p::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 2rem;
+  background-color: rgba(209, 197, 180, 0.3);
+}
+
+/* Secondary button — outline */
+.form-actions button[type="button"] {
+  background: transparent;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  padding: 1.25rem 2.5rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(209, 197, 180, 0.3);
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: var(--color-surface-container-low);
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.form-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(209, 197, 180, 0.1);
+  text-align: center;
+}
+
+.form-footer p {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(78, 70, 57, 0.6);
+  font-weight: 500;
+  font-family: var(--font-body);
+}
