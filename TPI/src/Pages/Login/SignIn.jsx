@@ -1,109 +1,161 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-import users from "../../../BDHarcodeada/Usuarios.json"
-import Usuario from "../../Models/UsuariosModel.jsx"
+import { useNavigate } from "react-router-dom";
+import users from "../../../BDHarcodeada/Usuarios.json";
+import Usuario from "../../Models/UsuariosModel.jsx";
 
-const SignIn = ( {setIsSignedIn , setSignedUp} ) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');   
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
+const SignIn = ({ setIsSignedIn, setSignedUp }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
+  const handleEmailChange = (event) => setEmail(event.target.value);
+  const handlePasswordChange = (event) => setPassword(event.target.value);
 
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    const handleSingin = (e) => {
-        e.preventDefault();
-
-        const usuario = new Usuario(email,password,0)
-
-
-        //Se mejora con context y hooks personalizados
-        if ( ValidarInicioSesion(usuario) ) {
-            setIsSignedIn(true);
-            navigate("/home", {state : {usuario}});
-        }else{
-          alert("Credenciales incorrectas.")
-        }
-    };
-
-    const handleSingup = (e) => {
-        e.preventDefault();
-        setSignedUp(true);
-    };
-
-    
-    const ValidarInicioSesion = (usuario) =>{
-      return users.find((u) => u.email === usuario.email && u.password === usuario.password)
+  const handleSingin = (e) => {
+    e.preventDefault();
+    const usuario_encontrado = ValidarInicioSesion(email, password);
+    if (usuario_encontrado) {
+      setIsSignedIn(true);
+      navigate("/home", { state: { usuario_encontrado } });
+    } else {
+      alert("Credenciales incorrectas.");
     }
+  };
 
-    return(
-        <div className="panel-right">
+  const handleSingup = (e) => {
+    e.preventDefault();
+    setSignedUp(true);
+  };
 
-          {/* Encabezado */}
-          <div className="form-header">
-            <h2>Acceder al Atelier</h2>
-            <p>Por favor, ingresa tus credenciales para gestionar tu experiencia capilar.</p>
+  const ValidarInicioSesion = (email, password) => {
+    
+    return users.find((u) => 
+      u.email === email && 
+      u.password === password
+    );
+
+  }
+    
+
+  return (
+    <div className="d-flex flex-column justify-content-center align-items-center flex-grow-1 px-3 px-lg-5 py-5 bg-light min-vh-100">
+      <div className="w-100" style={{ maxWidth: "28rem" }}>
+
+        {/* Mobile brand */}
+        <div className="d-md-none text-center mb-5">
+          <span className="fst-italic fs-1 text-warning-emphasis">
+            The Atelier
+          </span>
+        </div>
+
+        {/* Encabezado */}
+        <div className="mb-5">
+          <h2 className="mb-2 fs-2 text-dark">
+            Acceder al Atelier
+          </h2>
+          <p className="fw-light text-secondary mb-0">
+            Por favor, ingresa tus credenciales para gestionar tu experiencia capilar.
+          </p>
+        </div>
+
+        {/* Formulario */}
+        <form className="d-flex flex-column gap-4" onSubmit={handleSingin}>
+
+          {/* Campo Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="form-label fw-bold text-uppercase text-secondary small"
+            >
+              Correo Electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="form-control form-control-lg border-0 border-bottom rounded-0 bg-transparent px-0"
+              onChange={handleEmailChange}
+              value={email}
+              placeholder="nombre@ejemplo.com"
+            />
           </div>
 
-          {/* Formulario */}
-          <form className="form-body">
+          {/* Campo Password */}
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-1">
+              <label
+                htmlFor="password"
+                className="form-label fw-bold text-uppercase text-secondary small mb-0"
+              >
+                Contraseña
+              </label>
+              <a
+                href="#"
+                className="fw-bold text-uppercase text-decoration-none text-warning-emphasis small"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
 
-            {/* Campo Email */}
-            <div className="field">
-              <label htmlFor="email">Correo Electrónico</label>
+            <div className="input-group">
               <input
-                type="email"
-                id="email"
-                name="email"
-                onChange={handleEmailChange}
-                value={email}
-                placeholder="nombre@ejemplo.com"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                className="form-control form-control-lg border-0 border-bottom rounded-0 bg-transparent px-0"
+                onChange={handlePasswordChange}
+                value={password}
+                placeholder="••••••••"
               />
+              <button
+                type="button"
+                className="btn btn-link text-secondary px-0 border-0 border-bottom rounded-0"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁" : "🔒"}
+              </button>
+            </div>
+          </div>
+
+          {/* Botones */}
+          <div className="d-flex flex-column gap-3 pt-2">
+
+            <button
+              type="submit"
+              className="btn btn-warning w-100 fw-bold text-uppercase text-white rounded-pill py-3 letter-spacing"
+            >
+              Iniciar Sesión
+            </button>
+
+            {/* Divider */}
+            <div className="d-flex align-items-center justify-content-center gap-2 text-uppercase text-secondary small">
+              <hr className="flex-grow-1 opacity-25" />
+              ¿Eres nuevo en The Atelier?
+              <hr className="flex-grow-1 opacity-25" />
             </div>
 
-            {/* Campo Password */}
-            <div className="field">
-              <div className="field-top">
-                <label htmlFor="password">Contraseña</label>
-                <a href="#">¿Olvidaste tu contraseña?</a>
-              </div>
-              <div className="input-wrap">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  onChange={handlePasswordChange}
-                  value={password}
-                  placeholder="••••••••"
-                />
-                <button type="button" className="toggle-pw" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? '👁' : '🔒'}
-                </button>
-              </div>
-            </div>
+            <button
+              type="button"
+              className="btn btn-outline-secondary w-100 fw-bold text-uppercase rounded-pill py-3"
+              onClick={handleSingup}
+            >
+              Registrarse
+            </button>
 
-            {/* Botones */}
-            <div className="form-actions">
-              <button type="submit" onClick={handleSingin}>Iniciar Sesión</button>
-              <p>¿Eres nuevo en The Atelier?</p>
-              <button type="button" onClick={handleSingup}>Registrarse</button>
-            </div>
+          </div>
+        </form>
 
-          </form>
+        {/* Footer */}
+        <footer className="mt-5 pt-4 text-center border-top">
+          <small className="text-uppercase text-secondary fw-medium">
+            © 2024 The Atelier. Todos los derechos reservados.
+          </small>
+        </footer>
 
-          {/* Footer */}
-          <footer className="form-footer">
-            <p>© 2024 The Atelier. Todos los derechos reservados.</p>
-          </footer>
-
-        </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
 export default SignIn;
