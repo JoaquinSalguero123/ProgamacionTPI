@@ -14,13 +14,21 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
 
   const handleSingin = (e) => {
     e.preventDefault();
-    const usuario_encontrado = ValidarInicioSesion(email, password);
-    if (usuario_encontrado) {
-      setIsSignedIn(true);
-      navigate("/home", { state: { usuario_encontrado } });
-    } else {
-      alert("Credenciales incorrectas.");
-    }
+
+    ValidarInicioSesion(email, password)
+      .then(usuario_encontrado => {
+
+        if (usuario_encontrado) {
+          setIsSignedIn(true);
+          navigate("/home", {
+            state: { usuario_encontrado }
+          });
+
+        } else {
+          alert("Credenciales incorrectas.");
+        }
+
+      });
   };
 
   const handleSingup = (e) => {
@@ -29,13 +37,32 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
   };
 
   const ValidarInicioSesion = (email, password) => {
-    
-    return users.find((u) => 
-      u.email === email && 
-      u.password === password
-    );
 
-  }
+    return fetch(`http://localhost:3000/usuarios/${email}`)
+      .then(res => {
+
+        if (!res.ok) {
+          return null;
+        }
+
+        return res.json();
+      })
+      .then(usuario => {
+
+        if (
+          usuario &&
+          usuario.password === password
+        ) {
+          return usuario;
+        }
+
+        return null;
+      })
+      .catch(err => {
+        console.log(err);
+        return null;
+      });
+  };
     
 
   return (
