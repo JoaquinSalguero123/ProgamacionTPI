@@ -20,7 +20,7 @@ const SideBar = ({ usuario, setActiveView }) => {
                 </button>
 
                 <button
-                    style={{ display: usuario.ID_Rol == 0 ? "none" : "block" }}
+                    style={{ display: usuario.id_permisos == 0 ? "none" : "block" }}
                     className="pi-nav-item"
                     onClick={() => setActiveView("agenda")}
                 >
@@ -28,7 +28,7 @@ const SideBar = ({ usuario, setActiveView }) => {
                 </button>
 
                 <button
-                    style={{ display: usuario.ID_Rol == 0 ? "none" : "block" }}
+                    style={{ display: usuario.id_permisos == 0 ? "none" : "block" }}
                     className="pi-nav-item"
                     onClick={() => setActiveView("servicios")}
                 >
@@ -36,7 +36,7 @@ const SideBar = ({ usuario, setActiveView }) => {
                 </button>
 
                 <button
-                    style={{ display: usuario.ID_Rol != 2 ? "none" : "block" }}
+                    style={{ display: usuario.id_permisos != 2 ? "none" : "block" }}
                     className="pi-nav-item"
                     onClick={() => setActiveView("usuarios")}
                 >
