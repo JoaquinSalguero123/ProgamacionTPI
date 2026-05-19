@@ -1,0 +1,25 @@
+//Verifico la Rama Develop
+git checkout Develop
+
+//Actualizo rama Deveelop
+git pull origin Develop
+
+
+//Creo rama Trabajo
+git checkout -b feature/10-primer-fetch
+
+
+//Subo Rama Trabajo
+git push -u origin feature/10-primer-fetch
+
+
+
+
+//Vuelo a Deveelop
+
+git checkout Develop
+o
+git switch Develop
+
+
+
