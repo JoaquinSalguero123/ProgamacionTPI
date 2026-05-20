@@ -1,69 +1,140 @@
-import React from 'react';
-import '../../Style/PaginaInicio/PaginaInicio.css';
+import React, { useState } from 'react';
 
 const SideBar = ({ usuario, setActiveView }) => {
+    const [activeItem, setActiveItem] = useState("inicio");
+
+    const handleNav = (view) => {
+        setActiveItem(view);
+        setActiveView(view);
+    };
+
+    const navBtnStyle = (key) => ({
+        fontFamily: "'Noto Serif', serif",
+        fontSize: '11px',
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        background: activeItem === key ? '#f3f3f3' : 'transparent',
+        color: activeItem === key ? '#775a19' : '#7f7667',
+        fontWeight: activeItem === key ? 700 : 400,
+        borderRadius: '0 999px 999px 0',
+        transition: 'all 0.2s',
+        cursor: 'pointer',
+        border: 'none',
+    });
 
     return (
-        <aside className="pi-sidebar">
-            <div className="pi-brand">
-                <h1 className="pi-brand-name">Atelier Admin</h1>
-                <p className="pi-brand-role">Director General</p>
+        <aside
+            className="d-flex flex-column py-4"
+            style={{
+                width: '240px',
+                minWidth: '240px',
+                background: '#ffffff',
+                borderRight: '1px solid #d1c5b4',
+                position: 'sticky',
+                top: 0,
+                height: '100vh',
+            }}
+        >
+            {/* BRAND */}
+            <div className="px-4 pb-4" style={{ borderBottom: '1px solid #d1c5b4' }}>
+                <h1 style={{ fontFamily: "'Noto Serif', serif", fontSize: '18px', fontWeight: 700, color: '#775a19', margin: 0 }}>
+                    Atelier Admin
+                </h1>
+                <p style={{ fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7f7667', marginTop: '3px', marginBottom: 0 }}>
+                    Director General
+                </p>
             </div>
 
-            <nav className="pi-nav">
+            {/* NAV */}
+            <nav className="flex-grow-1 py-3">
 
                 <button
-                    className="pi-nav-item pi-nav-active"
-                    onClick={() => setActiveView("inicio")}
+                    className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+                    style={navBtnStyle("inicio")}
+                    onClick={() => handleNav("inicio")}
                 >
-                    <span className="pi-nav-icon">⊞</span> Inicio
+                    <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>⊞</span>
+                    Inicio
                 </button>
 
                 <button
-                    style={{ display: usuario.id_permisos == 0 ? "none" : "block" }}
-                    className="pi-nav-item"
-                    onClick={() => setActiveView("agenda")}
+                    className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+                    style={{ ...navBtnStyle("agenda"), display: usuario?.id_permisos == 0 ? "none" : "flex" }}
+                    onClick={() => handleNav("agenda")}
                 >
-                    <span className="pi-nav-icon">📅</span> Agenda
+                    <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>📅</span>
+                    Agenda
                 </button>
 
                 <button
-                    style={{ display: usuario.id_permisos == 0 ? "none" : "block" }}
-                    className="pi-nav-item"
-                    onClick={() => setActiveView("servicios")}
+                    className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+                    style={{ ...navBtnStyle("servicios"), display: usuario?.id_permisos == 0 ? "none" : "flex" }}
+                    onClick={() => handleNav("servicios")}
                 >
-                    <span className="pi-nav-icon">✂</span> Servicios
+                    <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>✂</span>
+                    Servicios
                 </button>
 
                 <button
-                    style={{ display: usuario.id_permisos != 2 ? "none" : "block" }}
-                    className="pi-nav-item"
-                    onClick={() => setActiveView("usuarios")}
+                    className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+                    style={{ ...navBtnStyle("usuarios"), display: usuario?.id_permisos != 2 ? "none" : "flex" }}
+                    onClick={() => handleNav("usuarios")}
                 >
-                    <span className="pi-nav-icon">👥</span> Usuarios
+                    <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>👥</span>
+                    Usuarios
                 </button>
 
                 <button
-                    className="pi-nav-item"
-                    onClick={() => setActiveView("config")}
+                    className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+                    style={navBtnStyle("config")}
+                    onClick={() => handleNav("config")}
                 >
-                    <span className="pi-nav-icon">⚙</span> Configuración
+                    <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>⚙</span>
+                    Configuración
                 </button>
 
             </nav>
 
-            <div className="pi-sidebar-footer">
+            {/* FOOTER */}
+            <div className="px-3 d-flex flex-column gap-2">
                 {usuario && (
-                    <div className="pi-user-pill">
-                        <span className="pi-user-dot" />
-                        <span className="pi-user-email">{usuario.email}</span>
+                    <div
+                        className="d-flex align-items-center gap-2 px-3 py-2"
+                        style={{ background: '#f3f3f3', borderRadius: '999px', fontSize: '11px', color: '#7f7667', overflow: 'hidden' }}
+                    >
+                        <span style={{
+                            width: '7px', height: '7px',
+                            borderRadius: '50%',
+                            background: '#27ae60',
+                            flexShrink: 0,
+                            display: 'inline-block'
+                        }} />
+                        <span className="text-truncate">{usuario.email}</span>
                     </div>
                 )}
-                <button className="pi-new-appt-btn">＋ Nuevo Turno</button>
+
+                <button
+                    className="w-100 border-0 fw-bold"
+                    style={{
+                        padding: '13px',
+                        background: 'linear-gradient(135deg, #775a19, #c5a059)',
+                        color: 'white',
+                        borderRadius: '999px',
+                        fontFamily: "'Manrope', sans-serif",
+                        fontSize: '11px',
+                        letterSpacing: '0.08em',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 16px rgba(119,90,25,0.25)',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                    ＋ Nuevo Turno
+                </button>
             </div>
         </aside>
     );
-}
-
+};
 
 export default SideBar;
