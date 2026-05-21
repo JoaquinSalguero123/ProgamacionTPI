@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import SideBar from './SideBar';
 import UsuariosPage from './PaginasNav/Usuarios';
 import TurnosPage from './PaginasNav/TurnosPage';
+import Configuracion from './PaginasNav/Configuracion';
 
 const PaginaPrincipal = () => {
   const { state } = useLocation();
@@ -21,7 +22,7 @@ const PaginaPrincipal = () => {
       case "usuarios":
         return <UsuariosPage />;
       case "config":
-        return <p>Configuracion</p>;
+        return <Configuracion Usuario={usuario} />;
       default:
         return <p>Pagina principal</p>;
     }
