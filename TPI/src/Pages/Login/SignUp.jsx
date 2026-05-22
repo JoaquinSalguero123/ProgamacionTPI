@@ -1,23 +1,50 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = ({ setSignedUp }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const navigate = useNavigate();
 
   const handleSignUp = (e) => {
     e.preventDefault();
+  
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden.");
+  
+      toast.error("Las contraseñas no coinciden.");
+  
       return;
     }
-    setSignedUp(true);
-    navigate("/home");
+  
+    RegistrarUsuario(email, name, 0, password, phoneNumber)
+      .then(usuario_encontrado => {
+  
+        if (usuario_encontrado) {
+  
+          toast.success("Usuario registrado correctamente.");
+          setTimeout(() => (
+            setSignedUp(false)
+          ),2500); // Espera 2 segundos para mostrar el mensaje 
+          
+  
+        } else {
+  
+          toast.error("No se pudo crear el usuario.");
+  
+        }
+  
+      })
+      .catch(() => {
+  
+        toast.error("Ocurrió un error inesperado.");
+  
+      });
   };
 
   const handleBackToLogin = (e) => {
@@ -25,7 +52,42 @@ const SignUp = ({ setSignedUp }) => {
     setSignedUp(false);
   };
 
+  const RegistrarUsuario = (email, name, permiso, password, phoneNumber) => {
+
+    const NuevoUsuario = {
+      email: email,
+      nombreCompleto_usuario: name,
+      id_permisos: permiso,
+      password: password,
+      telefono: phoneNumber
+    };
+  
+    return fetch(`http://localhost:3000/usuarios`, {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(NuevoUsuario)
+    })
+      .then(res => {
+  
+        if (!res.ok) {
+          return null;
+        }
+  
+        return res.json(); // <- IMPORTANTE
+      })
+      .then(data => {
+        return data; // devuelve el usuario creado
+      })
+      .catch(err => {
+        console.log(err);
+        return null;
+      });
+  };
+
   return (
+    <>
     <div className="d-flex flex-column justify-content-center align-items-center flex-grow-1 px-3 px-lg-5 py-5 bg-light min-vh-100">
       <div className="w-100" style={{ maxWidth: "28rem" }}>
 
@@ -141,6 +203,27 @@ const SignUp = ({ setSignedUp }) => {
             </div>
           </div>
 
+          {/* Telefono */}
+
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="form-label fw-bold text-uppercase text-secondary small"
+            >
+              Número de Teléfono
+            </label>
+            <div className="input-group">
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                className="form-control form-control-lg border-0 border-bottom rounded-0 bg-transparent px-0"
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={phoneNumber}
+                placeholder="Número de teléfono"
+              />
+            </div>
+          </div>
+
           {/* Botones */}
           <div className="d-flex flex-column gap-3 pt-2">
 
@@ -179,6 +262,9 @@ const SignUp = ({ setSignedUp }) => {
 
       </div>
     </div>
+    
+    <ToastContainer />
+    </>
   );
 };
 

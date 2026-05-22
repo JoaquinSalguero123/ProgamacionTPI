@@ -8,6 +8,7 @@ import TurnosPage from "./PaginasNav/TurnosPage";
 import SolicitarTurno from "./PaginasNav/Inicio";
 import ReservarTurno from "./PaginasNav/ReservarTurno";
 import Servicios from "./PaginasNav/Servicios";
+import Configuracion from './PaginasNav/Configuracion';
 
 const PaginaPrincipal = () => {
   const { state } = useLocation();
@@ -29,7 +30,7 @@ const PaginaPrincipal = () => {
       case "usuarios":
         return <UsuariosPage />;
       case "config":
-        return <p>Configuracion</p>;
+        return <Configuracion Usuario={usuario} />;
       case "reservar":
         return <ReservarTurno />;
       default:
@@ -38,24 +39,35 @@ const PaginaPrincipal = () => {
   };
 
   return (
-    <div className="pi-layout">
+    <div className="d-flex min-vh-100" style={{ background: '#f9f9f9', fontFamily: "'Manrope', sans-serif", color: '#1a1c1c' }}>
+
       {/* SIDEBAR */}
       <SideBar setActiveView={setActiveView} usuario={usuario} />
 
       {/* MAIN */}
-      <main className="pi-main">
+      <main className="flex-grow-1 p-5 overflow-auto d-flex flex-column gap-3">
+
         {/* HEADER */}
-        <header className="pi-header">
+        <header className="d-flex justify-content-between align-items-end">
           <div>
-            <span className="pi-greeting">
-              Buenos días, {usuario?.email ?? "Alexander"}
+            <span
+              className="d-block mb-1 fst-italic"
+              style={{ fontFamily: "'Noto Serif', serif", fontSize: '16px', color: '#c5a059' }}
+            >
+              Buenos días, {usuario?.email ?? 'Alexander'}
             </span>
-            <h2 className="pi-title">Rendimiento del Atelier</h2>
+            <h2
+              className="m-0 fw-bold"
+              style={{ fontFamily: "'Noto Serif', serif", fontSize: '40px', color: '#2f3131', letterSpacing: '-0.02em' }}
+            >
+              Rendimiento del Atelier
+            </h2>
           </div>
         </header>
 
-        {/* RENDERIZA LA PAGINA CORRESPONDIENTE */}
+        {/* RENDERIZA LA PÁGINA CORRESPONDIENTE */}
         {renderView()}
+
       </main>
     </div>
   );
