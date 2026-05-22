@@ -114,6 +114,7 @@ const SideBar = ({ usuario, setActiveView }) => {
                 )}
 
                 <button
+                    onClick={() => setActiveView("reservar")}
                     className="w-100 border-0 fw-bold"
                     style={{
                         padding: '13px',

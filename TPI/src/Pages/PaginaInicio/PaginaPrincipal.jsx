@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import SideBar from './SideBar';
-import UsuariosPage from './PaginasNav/Usuarios';
-import TurnosPage from './PaginasNav/TurnosPage';
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import SideBar from "./SideBar";
+import "../../Style/PaginaInicio/PaginaInicio.css";
+import Inicio from "./PaginasNav/Inicio";
+import UsuariosPage from "./PaginasNav/Usuarios";
+import TurnosPage from "./PaginasNav/TurnosPage";
+import SolicitarTurno from "./PaginasNav/Inicio";
+import ReservarTurno from "./PaginasNav/ReservarTurno";
+import Servicios from "./PaginasNav/Servicios";
 import Configuracion from './PaginasNav/Configuracion';
 
 const PaginaPrincipal = () => {
   const { state } = useLocation();
   const usuario = state?.usuario_encontrado;
 
+  {
+    /* Estado del switch */
+  }
   const [activeView, setActiveView] = useState("dashboard");
 
   const renderView = () => {
     switch (activeView) {
       case "inicio":
-        return <p>Pagina principal</p>;
+        return <Inicio setActiveView={setActiveView} />;
       case "agenda":
         return <TurnosPage />;
       case "servicios":
-        return <p>Servicios</p>;
+        return <Servicios />;
       case "usuarios":
         return <UsuariosPage />;
       case "config":
         return <Configuracion Usuario={usuario} />;
+      case "reservar":
+        return <ReservarTurno />;
       default:
-        return <p>Pagina principal</p>;
+        return <Inicio setActiveView={setActiveView} />;
     }
   };
 
