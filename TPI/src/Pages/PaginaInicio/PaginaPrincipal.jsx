@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import SideBar from "./SideBar";
-import "../../Style/PaginaInicio/PaginaInicio.css";
 import Inicio from "./PaginasNav/Inicio";
 import UsuariosPage from "./PaginasNav/Usuarios";
-import TurnosPage from "./PaginasNav/TurnosPage";
+import TurnosPage from "./PaginasNav/Agenda";
 import SolicitarTurno from "./PaginasNav/Inicio";
 import ReservarTurno from "./PaginasNav/ReservarTurno";
 import Servicios from "./PaginasNav/Servicios";
@@ -14,9 +13,7 @@ const PaginaPrincipal = () => {
   const { state } = useLocation();
   const usuario = state?.usuario_encontrado;
 
-  {
-    /* Estado del switch */
-  }
+  /* Estado del switch */
   const [activeView, setActiveView] = useState("dashboard");
 
   const renderView = () => {
@@ -37,6 +34,9 @@ const PaginaPrincipal = () => {
         return <Inicio setActiveView={setActiveView} />;
     }
   };
+
+
+
 
   return (
     <div className="d-flex min-vh-100" style={{ background: '#f9f9f9', fontFamily: "'Manrope', sans-serif", color: '#1a1c1c' }}>
