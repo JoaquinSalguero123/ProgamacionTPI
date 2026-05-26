@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import Inicio from "./PaginasNav/Inicio";
 import UsuariosPage from "./PaginasNav/Usuarios";
 import TurnosPage from "./PaginasNav/Agenda";
-import SolicitarTurno from "./PaginasNav/Inicio";
 import ReservarTurno from "./PaginasNav/ReservarTurno";
 import Servicios from "./PaginasNav/Servicios";
-import Configuracion from './PaginasNav/Configuracion';
+import Configuracion from "./PaginasNav/Configuracion";
 
 const PaginaPrincipal = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const usuario = state?.usuario_encontrado;
 
-  /* Estado del switch */
-  const [activeView, setActiveView] = useState("dashboard");
+  const [activeView, setActiveView] = useState("inicio");
 
   const renderView = () => {
     switch (activeView) {
@@ -35,39 +34,148 @@ const PaginaPrincipal = () => {
     }
   };
 
-
-
+  const navBtnStyle = {
+    fontFamily: "'Noto Serif', serif",
+    fontSize: "16px",
+    color: "#7f7667",
+    border: "none",
+    background: "none",
+    cursor: "pointer",
+    padding: "0",
+  };
 
   return (
-    <div className="d-flex min-vh-100" style={{ background: '#f9f9f9', fontFamily: "'Manrope', sans-serif", color: '#1a1c1c' }}>
-
+    <div
+      className="d-flex min-vh-100"
+      style={{
+        background: "#f9f9f9",
+        fontFamily: "'Manrope', sans-serif",
+        color: "#1a1c1c",
+      }}
+    >
       {/* SIDEBAR */}
       <SideBar setActiveView={setActiveView} usuario={usuario} />
 
       {/* MAIN */}
-      <main className="flex-grow-1 p-5 overflow-auto d-flex flex-column gap-3">
-
+      <main className="flex-grow-1 overflow-auto d-flex flex-column">
         {/* HEADER */}
-        <header className="d-flex justify-content-between align-items-end">
-          <div>
+        <header
+          className="sticky-top px-5 py-3"
+          style={{
+            background: "rgba(249,249,249,0.85)",
+            backdropFilter: "blur(24px)",
+            borderBottom: "1px solid rgba(209,197,180,0.2)",
+            zIndex: 50,
+          }}
+        >
+          {/* FILA 1 — Saludo */}
+          <div className="mb-2">
             <span
-              className="d-block mb-1 fst-italic"
-              style={{ fontFamily: "'Noto Serif', serif", fontSize: '16px', color: '#c5a059' }}
+              className="fst-italic"
+              style={{
+                fontFamily: "'Noto Serif', serif",
+                fontSize: "16px",
+                color: "#c5a059",
+              }}
             >
-              Buenos días, {usuario?.email ?? 'Alexander'}
+              Buenos días, {usuario?.nombreCompleto_usuario ?? "Alexander"}
             </span>
-            <h2
-              className="m-0 fw-bold"
-              style={{ fontFamily: "'Noto Serif', serif", fontSize: '40px', color: '#2f3131', letterSpacing: '-0.02em' }}
+          </div>
+
+          {/* FILA 2 — Nav */}
+          <div className="d-flex justify-content-between align-items-center">
+            <div
+              style={{
+                fontFamily: "'Noto Serif', serif",
+                fontStyle: "italic",
+                fontSize: "22px",
+                color: "#2f3131",
+              }}
             >
-              Rendimiento del Atelier
-            </h2>
+              The Atelier
+            </div>
+            <div className="d-none d-md-flex align-items-center gap-4">
+              <button
+                onClick={() => setActiveView("inicio")}
+                style={{
+                  ...navBtnStyle,
+                  color: activeView === "inicio" ? "#775a19" : "#7f7667",
+                  fontWeight: activeView === "inicio" ? 700 : 400,
+                  borderBottom:
+                    activeView === "inicio"
+                      ? "2px solid #775a19"
+                      : "2px solid transparent",
+                  paddingBottom: "2px",
+                }}
+              >
+                Atelier
+              </button>
+              <button
+                onClick={() => setActiveView("servicios")}
+                style={{
+                  ...navBtnStyle,
+                  color: activeView === "servicios" ? "#775a19" : "#7f7667",
+                  fontWeight: activeView === "servicios" ? 700 : 400,
+                  borderBottom:
+                    activeView === "servicios"
+                      ? "2px solid #775a19"
+                      : "2px solid transparent",
+                  paddingBottom: "2px",
+                }}
+              >
+                Servicios
+              </button>
+              <button
+                onClick={() => setActiveView("agenda")}
+                style={{
+                  ...navBtnStyle,
+                  color: activeView === "agenda" ? "#775a19" : "#7f7667",
+                  fontWeight: activeView === "agenda" ? 700 : 400,
+                  borderBottom:
+                    activeView === "agenda"
+                      ? "2px solid #775a19"
+                      : "2px solid transparent",
+                  paddingBottom: "2px",
+                }}
+              >
+                Agenda
+              </button>
+              <button
+                onClick={() => setActiveView("config")}
+                style={{
+                  ...navBtnStyle,
+                  color: activeView === "config" ? "#775a19" : "#7f7667",
+                  fontWeight: activeView === "config" ? 700 : 400,
+                  borderBottom:
+                    activeView === "config"
+                      ? "2px solid #775a19"
+                      : "2px solid transparent",
+                  paddingBottom: "2px",
+                }}
+              >
+                Configuración
+              </button>
+            </div>
+            <button
+              onClick={() => navigate("/")}
+              className="border-0 fw-semibold px-4 py-2"
+              style={{
+                background: "linear-gradient(to right, #775a19, #c5a059)",
+                color: "white",
+                borderRadius: "999px",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
+            >
+              Cerrar sesión
+            </button>
           </div>
         </header>
 
-        {/* RENDERIZA LA PÁGINA CORRESPONDIENTE */}
-        {renderView()}
-
+        {/* CONTENIDO */}
+        <div className="flex-grow-1 p-5 d-flex flex-column gap-3">
+          {renderView()}
+        </div>
       </main>
     </div>
   );
