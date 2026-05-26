@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const ReservarTurno = () => {
-  const [selectedStylist, setSelectedStylist] = useState(0);
+  const [selectedStylist, setSelectedStylist] = useState([]);
   const [selectedTime, setSelectedTime] = useState("13:00");
   const [showModal, setShowModal] = useState(false);
   const [servicio, setServicio] = useState("");
@@ -43,10 +43,42 @@ const ReservarTurno = () => {
     "20:30",
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e, fecha, horario_turno, email_cliente, id_servicio, email_estilista) => {
     e.preventDefault();
     setShowModal(true);
+
+    const NuevoTurno = {
+      fecha: fecha,
+      horario_turno: horario_turno,
+      email_cliente: email_cliente,
+      id_servicio: id_servicio,
+      email_estilista: email_estilista
+    };
+  
+    return fetch(`http://localhost:3000/usuarios`, {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(NuevoTurno)
+    })
+      .then(res => {
+  
+        if (!res.ok) {
+          return null;
+        }
+  
+        return res.json(); // <- IMPORTANTE
+      })
+      .then(data => {
+        return data; // devuelve el usuario creado
+      })
+      .catch(err => {
+        console.log(err);
+        return null;
+      });
   };
+
 
   const sectionStyle = {
     background: "#ffffff",
@@ -156,6 +188,7 @@ const ReservarTurno = () => {
               </h2>
             </div>
             <div className="row g-3">
+              {/* MAPEO DE PELUQUEROS */}
               {peluqueros.map((p, i) => (
                 <div className="col-6 col-md-3" key={i}>
                   <div

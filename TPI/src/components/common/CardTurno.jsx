@@ -1,4 +1,42 @@
-const CardTurno = ({ fecha, importe, servicio, estado, estilista }) => {
+import { useEffect, useState } from "react";
+
+const estados = {
+  0: { texto: "Pendiente", color: "secondary" },
+  1: { texto: "Aceptado", color: "success" },
+  2: { texto: "Rechazado", color: "danger" },
+  3: { texto: "Finalizado", color: "primary" }
+};
+
+
+const CardTurno = ({ fecha, hora_turno, email_cliente, id_servicio, email_estilista, estado }) => {
+
+  const [servicio, setServicio] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3000/servicios/${id_servicio}`)
+      .then(res => res.json())
+      .then(data => setServicio(data))
+      .catch(error => console.error(error));
+  }, []);
+
+  const [estilista, setEstilista] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3000/usuarios/${email_estilista}`)
+      .then(res => res.json())
+      .then(data => setEstilista(data))
+      .catch(error => console.error(error));
+  }, []);
+
+  // formatear la fecha en Dia/Mes
+  const diaMes = new Date(fecha).toLocaleDateString("es-AR", {
+    day: "2-digit",
+    month: "2-digit"
+  });
+
+  // solo estados validos
+  const estadoInfo = estados[estado] || {
+    texto: "Desconocido",
+    color: "dark"
+  };
 
   return (
     <div
@@ -20,24 +58,24 @@ const CardTurno = ({ fecha, importe, servicio, estado, estilista }) => {
         </p>
 
         <h4 className="mb-2 fw-bold fs-6 m-0" style={{ color: '#2f3131' }}>
-          {servicio}
+          {servicio.nombre_servicio}
         </h4>
 
         <div className="d-flex flex-wrap gap-2 my-2">
           <span className="badge fw-bold text-uppercase" style={{ background: '#2f3131', color: '#e9c176', letterSpacing: '0.08em' }}>
-            ${importe}
+            ${servicio.precio}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
-            Fecha: {fecha}
+            Fecha: {diaMes} a las {hora_turno}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
-            Estilista: {estilista}
+            Estilista: {estilista.nombreCompleto_usuario}
           </span>
         </div>
 
         <div className="d-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light" style={{ width: 'fit-content' }}>
-          <span className="rounded-circle bg-success d-inline-block flex-shrink-0" style={{ width: '7px', height: '7px' }} />
-          <span className="small text-secondary">{estado}</span>
+          <span className={`rounded-circle bg-${estadoInfo.color} d-inline-block flex-shrink-0`} style={{ width: '7px', height: '7px' }} />
+          <span className="small text-secondary">{estadoInfo.texto}</span>
         </div>
 
       </div>

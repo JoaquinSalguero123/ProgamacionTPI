@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import Inicio from "./PaginasNav/Inicio";
 import UsuariosPage from "./PaginasNav/Usuarios";
-import TurnosPage from "./PaginasNav/TurnosPage";
+import TurnosPage from "./PaginasNav/Agenda";
 import ReservarTurno from "./PaginasNav/ReservarTurno";
 import Servicios from "./PaginasNav/Servicios";
 import Configuracion from "./PaginasNav/Configuracion";
