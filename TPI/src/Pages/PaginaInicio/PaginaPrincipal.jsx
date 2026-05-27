@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import Inicio from "./PaginasNav/Inicio";
@@ -7,11 +7,29 @@ import TurnosPage from "./PaginasNav/Agenda";
 import ReservarTurno from "./PaginasNav/ReservarTurno";
 import Servicios from "./PaginasNav/Servicios";
 import Configuracion from "./PaginasNav/Configuracion";
+import { jwtDecode } from 'jwt-decode';
 
 const PaginaPrincipal = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const usuario = state?.usuario_encontrado;
+  const [email, setEmail] = useState(null);
+  const [rol, setRol] = useState(null);
+
+  useEffect(() => {
+      const token = localStorage.getItem("Token");
+      if (token) {
+          try {
+              const decoded = jwtDecode(token);
+              console.log(decoded);
+              setEmail(decoded.email); // tomamos el mail del token
+              setRol(Number(decoded.role));    // tomamos el rol del token
+          } catch (error) {
+              console.error("Error decoding token:", error);
+              localStorage.removeItem("Token"); 
+          }
+      }
+  }, []);
+
 
   const [activeView, setActiveView] = useState("inicio");
 
@@ -26,7 +44,7 @@ const PaginaPrincipal = () => {
       case "usuarios":
         return <UsuariosPage />;
       case "config":
-        return <Configuracion Usuario={usuario} />;
+        return <Configuracion usuario_rol={rol} />;
       case "reservar":
         return <ReservarTurno />;
       default:
@@ -54,7 +72,8 @@ const PaginaPrincipal = () => {
       }}
     >
       {/* SIDEBAR */}
-      <SideBar setActiveView={setActiveView} usuario={usuario} />
+      <SideBar setActiveView={setActiveView} usuario_rol={rol} usuario_email={email}/>
+      
 
       {/* MAIN */}
       <main className="flex-grow-1 overflow-auto d-flex flex-column">
@@ -78,7 +97,7 @@ const PaginaPrincipal = () => {
                 color: "#c5a059",
               }}
             >
-              Buenos días, {usuario?.nombreCompleto_usuario ?? "Alexander"}
+              Buenos días, {email ?? "Alexander"}
             </span>
           </div>
 

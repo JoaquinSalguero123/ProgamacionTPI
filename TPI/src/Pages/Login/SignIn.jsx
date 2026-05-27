@@ -20,10 +20,7 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
 
         if (usuario_encontrado) {
           setIsSignedIn(true);
-          navigate("/home", {
-            state: { usuario_encontrado }
-          });
-
+          navigate("/home");
         } else {
           alert("Credenciales incorrectas.");
         }
@@ -38,27 +35,26 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
 
   const ValidarInicioSesion = (email, password) => {
 
-    return fetch(`http://localhost:3000/usuarios/${email}`)
-      .then(res => {
-
+    return fetch(`http://localhost:3000/usuarios/login` , {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ email: email, password: password }),
+    })
+      .then((res) => {
         if (!res.ok) {
           return null;
         }
 
-        return res.json();
+        return res.json(); // <- IMPORTANTE
       })
-      .then(usuario => {
-
-        if (
-          usuario &&
-          usuario.password === password
-        ) {
-          return usuario;
-        }
-
-        return null;
+      .then((token) => {
+        console.log("TOKEN GUARDADO",token);
+        localStorage.setItem("Token", token);
+        return true;
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         return null;
       });
