@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ usuario, setActiveView }) => {
+const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
   const navigate = useNavigate();
   const handleCerrarSesion = () => navigate("/");
   const [activeItem, setActiveItem] = useState("inicio");
@@ -80,53 +80,35 @@ const SideBar = ({ usuario, setActiveView }) => {
           Inicio
         </button>
 
-        <button
-          className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
-          style={{
-            ...navBtnStyle("agenda"),
-            display: usuario?.id_permisos == 0 ? "none" : "flex",
-          }}
-          onClick={() => handleNav("agenda")}
-        >
-          <span
-            style={{ fontSize: "14px", width: "18px", textAlign: "center" }}
+        {usuario_rol != 0 && (
+          <button
+            className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+            style={navBtnStyle("agenda")}
+            onClick={() => handleNav("agenda")}
           >
-            📅
-          </span>
-          Agenda
-        </button>
+            📅 Agenda
+          </button>
+        )}
 
-        <button
-          className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
-          style={{
-            ...navBtnStyle("servicios"),
-            display: usuario?.id_permisos == 0 ? "none" : "flex",
-          }}
-          onClick={() => handleNav("servicios")}
-        >
-          <span
-            style={{ fontSize: "14px", width: "18px", textAlign: "center" }}
+        {usuario_rol != 0 && (
+          <button
+            className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+            style={navBtnStyle("servicios")}
+            onClick={() => handleNav("servicios")}
           >
-            ✂
-          </span>
-          Servicios
-        </button>
+            ✂ Servicios
+          </button>
+        )}
 
-        <button
-          className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
-          style={{
-            ...navBtnStyle("usuarios"),
-            display: usuario?.id_permisos != 2 ? "none" : "flex",
-          }}
-          onClick={() => handleNav("usuarios")}
-        >
-          <span
-            style={{ fontSize: "14px", width: "18px", textAlign: "center" }}
+        {usuario_rol == 2 && (
+          <button
+            className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
+            style={navBtnStyle("usuarios")}
+            onClick={() => handleNav("usuarios")}
           >
-            👥
-          </span>
-          Usuarios
-        </button>
+            👥 Usuarios
+          </button>
+        )}
 
         <button
           className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
@@ -144,7 +126,7 @@ const SideBar = ({ usuario, setActiveView }) => {
 
       {/* FOOTER */}
       <div className="px-3 d-flex flex-column gap-2">
-        {usuario && (
+        {usuario_email && (
           <div
             className="d-flex align-items-center gap-2 px-3 py-2"
             style={{
@@ -165,7 +147,7 @@ const SideBar = ({ usuario, setActiveView }) => {
                 display: "inline-block",
               }}
             />
-            <span className="text-truncate">{usuario.email}</span>
+            <span className="text-truncate">{usuario_email}</span>
           </div>
         )}
 

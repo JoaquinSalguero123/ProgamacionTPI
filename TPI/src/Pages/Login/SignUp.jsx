@@ -40,7 +40,7 @@ const SignUp = ({ setSignedUp }) => {
     setSignedUp(false);
   };
 
-  const RegistrarUsuario = (email, name, permiso, password, phoneNumber) => {
+  const RegistrarUsuario = async (email, name, permiso, password, phoneNumber) => {
     const NuevoUsuario = {
       email: email,
       nombreCompleto_usuario: name,
@@ -49,7 +49,7 @@ const SignUp = ({ setSignedUp }) => {
       telefono: phoneNumber,
     };
 
-    return fetch(`http://localhost:3000/usuarios`, {
+    return fetch(`http://localhost:3000/usuarios/register`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -64,6 +64,7 @@ const SignUp = ({ setSignedUp }) => {
         return res.json(); // <- IMPORTANTE
       })
       .then((data) => {
+        console.log(data);
         return data; // devuelve el usuario creado
       })
       .catch((err) => {
