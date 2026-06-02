@@ -6,6 +6,8 @@ const LoginPages = ({ setIsSignedIn }) => {
 
   const [signedUp, setSignedUp] = useState(false);
 
+  
+
   return (
     <div className="d-flex flex-column flex-md-row min-vh-100">
 

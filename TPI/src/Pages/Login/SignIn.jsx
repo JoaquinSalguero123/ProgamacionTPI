@@ -50,9 +50,13 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
         return res.json(); // <- IMPORTANTE
       })
       .then((token) => {
-        console.log("TOKEN GUARDADO",token);
-        localStorage.setItem("Token", token);
-        return true;
+        if(token){
+          console.log("TOKEN GUARDADO",token);
+          localStorage.setItem("Token", token);
+          return true;
+        }else{
+          return false;
+        }
       })
       .catch((err) => {
         console.log(err);
