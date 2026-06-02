@@ -19,7 +19,11 @@ const TurnosPage = () => {
   const [turnos, setTurnos] = useState([]);
 
   useEffect(() => {
-      fetch("http://localhost:3000/turnos")
+      fetch("http://localhost:3000/turnos",{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+      })
         .then(res => res.json())
         .then(data => setTurnos(data))
         .catch(error => console.error(error));

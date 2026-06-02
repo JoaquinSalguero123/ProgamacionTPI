@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+
 const ReservarTurno = () => {
-  const [selectedStylist, setSelectedStylist] = useState([]);
+  const [selectedStylist, setSelectedStylist] = useState();
   const [selectedTime, setSelectedTime] = useState("13:00");
   const [showModal, setShowModal] = useState(false);
   const [servicio, setServicio] = useState("");
@@ -9,7 +10,11 @@ const ReservarTurno = () => {
   const [servicios, setServicios] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/servicios")
+    fetch("http://localhost:3000/servicios",{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+      })
       .then((res) => res.json())
       .then((data) => setServicios(data));
   }, []);
@@ -17,7 +22,11 @@ const ReservarTurno = () => {
   const [peluqueros, setPeluqueros] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/usuarios")
+    fetch("http://localhost:3000/usuarios",{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+      })
       .then((res) => res.json())
       .then((data) => setPeluqueros(data.filter((u) => u.id_permisos === 1)));
   }, []);
@@ -55,8 +64,9 @@ const ReservarTurno = () => {
       email_estilista: email_estilista
     };
   
-    return fetch(`http://localhost:3000/usuarios`, {
+    return fetch(`http://localhost:3000/turnos`, {
       headers: {
+        "Authorization" : ` Bearer ${localStorage.getItem("Token")} `,
         "Content-Type": "application/json"
       },
       method: "POST",
@@ -208,7 +218,7 @@ const ReservarTurno = () => {
                     }}
                   >
                     <img
-                      src={p.foto ?? "https://via.placeholder.com/72"}
+                      src={p.foto ?? "/Incognito.jpg"}
                       alt={p.nombreCompleto}
                       style={{
                         width: "72px",

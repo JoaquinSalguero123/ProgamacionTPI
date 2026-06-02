@@ -12,7 +12,11 @@ const CardTurno = ({ fecha, hora_turno, email_cliente, id_servicio, email_estili
 
   const [servicio, setServicio] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3000/servicios/${id_servicio}`)
+    fetch(`http://localhost:3000/servicios/${id_servicio}`,{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+  })
       .then(res => res.json())
       .then(data => setServicio(data))
       .catch(error => console.error(error));
@@ -20,7 +24,11 @@ const CardTurno = ({ fecha, hora_turno, email_cliente, id_servicio, email_estili
 
   const [estilista, setEstilista] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3000/usuarios/${email_estilista}`)
+    fetch(`http://localhost:3000/usuarios/${email_estilista}`,{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+  })
       .then(res => res.json())
       .then(data => setEstilista(data))
       .catch(error => console.error(error));

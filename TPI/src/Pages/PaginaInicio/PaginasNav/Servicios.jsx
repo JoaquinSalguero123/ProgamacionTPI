@@ -5,7 +5,11 @@ const Servicios = () => {
   const [servicios, setServicios] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/servicios")
+    fetch("http://localhost:3000/servicios",{
+        headers: {
+          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
+        }
+  })
       .then((res) => res.json())
       .then((data) => setServicios(data));
   }, []);
