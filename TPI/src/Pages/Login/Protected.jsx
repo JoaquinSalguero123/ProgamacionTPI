@@ -1,8 +1,9 @@
 import { Navigate } from "react-router";
-const Protected = ({isSignedIn, children}) => {
+const Protected = ({isSignedIn, rol_permitido, children}) => {
         if (!isSignedIn) {
             return <Navigate to="/" replace/>
         }
         return children;
 }
 export default Protected;
+

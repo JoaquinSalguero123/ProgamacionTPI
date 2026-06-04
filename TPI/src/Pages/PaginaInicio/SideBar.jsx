@@ -1,24 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
+const SideBar = ({ usuario_rol, usuario_email, setActiveView, activeView, handleCerrarSesion}) => {
   const navigate = useNavigate();
-  const handleCerrarSesion = () => navigate("/");
-  const [activeItem, setActiveItem] = useState("inicio");
+  
 
-  const handleNav = (view) => {
-    setActiveItem(view);
-    setActiveView(view);
-  };
 
   const navBtnStyle = (key) => ({
     fontFamily: "'Noto Serif', serif",
     fontSize: "11px",
     letterSpacing: "0.1em",
     textTransform: "uppercase",
-    background: activeItem === key ? "#f3f3f3" : "transparent",
-    color: activeItem === key ? "#775a19" : "#7f7667",
-    fontWeight: activeItem === key ? 700 : 400,
+    background: activeView === key ? "#f3f3f3" : "transparent",
+    color: activeView === key ? "#775a19" : "#7f7667",
+    fontWeight: activeView === key ? 700 : 400,
     borderRadius: "0 999px 999px 0",
     transition: "all 0.2s",
     cursor: "pointer",
@@ -70,7 +65,7 @@ const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
         <button
           className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
           style={navBtnStyle("inicio")}
-          onClick={() => handleNav("inicio")}
+          onClick={() => setActiveView("inicio")}
         >
           <span
             style={{ fontSize: "14px", width: "18px", textAlign: "center" }}
@@ -84,7 +79,7 @@ const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
           <button
             className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
             style={navBtnStyle("agenda")}
-            onClick={() => handleNav("agenda")}
+            onClick={() => setActiveView("agenda")}
           >
             📅 Agenda
           </button>
@@ -94,7 +89,7 @@ const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
           <button
             className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
             style={navBtnStyle("servicios")}
-            onClick={() => handleNav("servicios")}
+            onClick={() => setActiveView("servicios")}
           >
             ✂ Servicios
           </button>
@@ -104,7 +99,7 @@ const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
           <button
             className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
             style={navBtnStyle("usuarios")}
-            onClick={() => handleNav("usuarios")}
+            onClick={() => setActiveView("usuarios")}
           >
             👥 Usuarios
           </button>
@@ -113,7 +108,7 @@ const SideBar = ({ usuario_rol, usuario_email, setActiveView }) => {
         <button
           className="d-flex align-items-center gap-2 w-100 text-start py-2 px-4"
           style={navBtnStyle("config")}
-          onClick={() => handleNav("config")}
+          onClick={() => setActiveView("config")}
         >
           <span
             style={{ fontSize: "14px", width: "18px", textAlign: "center" }}

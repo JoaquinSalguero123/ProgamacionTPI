@@ -16,8 +16,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-
   
+
+  const ROLES = {
+    USER: 0,
+    ADMIN: 1,
+    SUPERADMIN: 2,
+  };
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -34,8 +40,8 @@ function App() {
           <Route
             path="/home"
             element={
-              <Protected isSignedIn={isSignedIn}>
-                <PaginaPrincipal />
+              <Protected isSignedIn={isSignedIn} rol_permitido={ROLES.USER}>
+                <PaginaPrincipal/>
               </Protected>
             }
           />
@@ -44,5 +50,11 @@ function App() {
     </div>
   );
 }
+
+/*{element:
+      <Private requiredRoles={["EventOrganizer"]}>
+        <OrganizerDashboard/>
+      </Private>,
+     path: "/organizer"}*/
 
 export default App;
