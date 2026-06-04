@@ -1,5 +1,11 @@
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Header = ({activeView, setActiveView, usuario_email, usuario_rol, handleCerrarSesion}) => {
+
+const Header = ({ user, handleCerrarSesion, isSignedIn }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const role = user?.role ?? null;
 
     const navBtnStyle = {
         fontFamily: "'Noto Serif', serif",
@@ -11,7 +17,21 @@ const Header = ({activeView, setActiveView, usuario_email, usuario_rol, handleCe
         padding: "0",
     };
 
-    
+    const getNavStyle = (path) => {
+        const isActive = location.pathname === path;
+
+        return {
+            ...navBtnStyle,
+            color: isActive ? "#775a19" : "#7f7667",
+            fontWeight: isActive ? 700 : 400,
+            borderBottom: isActive
+                ? "2px solid #775a19"
+                : "2px solid transparent",
+            paddingBottom: "2px",
+        };
+    };
+
+
 
     return (
         <header
@@ -33,7 +53,7 @@ const Header = ({activeView, setActiveView, usuario_email, usuario_rol, handleCe
                         color: "#c5a059",
                     }}
                 >
-                    Buenos días, {usuario_email ?? "Alexander"}
+                    {"Buenos días, ", user?.email ?? "Bienvenido"}
                 </span>
             </div>
 
@@ -50,73 +70,47 @@ const Header = ({activeView, setActiveView, usuario_email, usuario_rol, handleCe
                     The Atelier
                 </div>
                 <div className="d-none d-md-flex align-items-center gap-4">
+
+                    {/* BOTON DE INICIO */}
                     <button
-                        onClick={() => setActiveView("inicio")}
-                        style={{
-                            ...navBtnStyle,
-                            color: activeView === "inicio" ? "#775a19" : "#7f7667",
-                            fontWeight: activeView === "inicio" ? 700 : 400,
-                            borderBottom:
-                                activeView === "inicio"
-                                    ? "2px solid #775a19"
-                                    : "2px solid transparent",
-                            paddingBottom: "2px",
-                        }}
+                        onClick={() => navigate("/")}
+                        style={getNavStyle("/")}
                     >
                         Atelier
                     </button>
+
+                    {/* BOTON DE SERVICIOS */}
                     <button
-                        onClick={() => setActiveView("servicios")}
-                        style={{
-                            ...navBtnStyle,
-                            color: activeView === "servicios" ? "#775a19" : "#7f7667",
-                            fontWeight: activeView === "servicios" ? 700 : 400,
-                            borderBottom:
-                                activeView === "servicios"
-                                    ? "2px solid #775a19"
-                                    : "2px solid transparent",
-                            paddingBottom: "2px",
-                        }}
+                        onClick={() => navigate("/servicios")}
+                        style={getNavStyle("/servicios")}
                     >
                         Servicios
                     </button>
-                    
-                    {usuario_rol != 0 && (
-                    <button
-                        onClick={() => setActiveView("agenda")}
-                        style={{
-                            ...navBtnStyle,
-                            color: activeView === "agenda" ? "#775a19" : "#7f7667",
-                            fontWeight: activeView === "agenda" ? 700 : 400,
-                            borderBottom:
-                                activeView === "agenda"
-                                    ? "2px solid #775a19"
-                                    : "2px solid transparent",
-                            paddingBottom: "2px",
-                        }}
-                    >
-                        Agenda
-                    </button>
+
+                    {/* BOTON DE AGENDA */}
+                    {role >= 1 && (
+                        <button
+                            onClick={() => navigate("/agenda")}
+                            style={getNavStyle("/agenda")}
+                        >
+                            Agenda
+                        </button>
                     )}
 
+                    {/* BOTON DE CONFIGURACION */}
+                    {role !== null && (
                     <button
-                        onClick={() => setActiveView("config")}
-                        style={{
-                            ...navBtnStyle,
-                            color: activeView === "config" ? "#775a19" : "#7f7667",
-                            fontWeight: activeView === "config" ? 700 : 400,
-                            borderBottom:
-                                activeView === "config"
-                                    ? "2px solid #775a19"
-                                    : "2px solid transparent",
-                            paddingBottom: "2px",
-                        }}
+                        onClick={() => navigate("/config")}
+                        style={getNavStyle("/config")}
                     >
                         Configuración
                     </button>
+                    )}
+
+
                 </div>
                 <button
-                    onClick={handleCerrarSesion}
+                    onClick={() => isSignedIn ? handleCerrarSesion() : navigate("/login")}
                     className="border-0 fw-semibold px-4 py-2"
                     style={{
                         background: "linear-gradient(to right, #775a19, #c5a059)",
@@ -126,7 +120,7 @@ const Header = ({activeView, setActiveView, usuario_email, usuario_rol, handleCe
                         cursor: "pointer",
                     }}
                 >
-                    Cerrar sesión
+                    {isSignedIn ? "Cerrar sesión" : "Iniciar sesión"}
                 </button>
             </div>
         </header>
