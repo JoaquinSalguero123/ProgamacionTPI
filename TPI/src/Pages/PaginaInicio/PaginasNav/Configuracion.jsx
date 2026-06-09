@@ -15,11 +15,18 @@ const Configuracion = ({ Usuario }) => {
     const [mensaje, setMensaje] = useState(null);
     const [mostrarPassword, setMostrarPassword] = useState(false);
 
-    //  Cargar datos del usuario 
+    const authHeaders = () => ({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('Token')}`,
+    });
+
+    // Cargar datos del usuario logueado
     useEffect(() => {
         if (!Usuario?.email) return;
 
-        fetch(`http://localhost:3000/usuarios/${Usuario.email}`)
+        fetch(`http://localhost:3000/usuarios/${encodeURIComponent(Usuario.email)}`, {
+            headers: authHeaders(),
+        })
             .then(res => {
                 if (!res.ok) throw new Error();
                 return res.json();
@@ -37,7 +44,6 @@ const Configuracion = ({ Usuario }) => {
             .finally(() => setLoading(false));
     }, [Usuario]);
 
-    // Handlers 
     const handleChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
         setMensaje(null);
@@ -52,7 +58,6 @@ const Configuracion = ({ Usuario }) => {
         setGuardando(true);
         setMensaje(null);
 
-        
         const body = {
             nombreCompleto_usuario: form.nombreCompleto_usuario,
             telefono: form.telefono,
@@ -60,9 +65,9 @@ const Configuracion = ({ Usuario }) => {
         if (form.password) body.password = form.password;
 
         try {
-            const res = await fetch(`http://localhost:3000/usuarios/${Usuario.email}`, {
+            const res = await fetch(`http://localhost:3000/usuarios/${encodeURIComponent(Usuario.email)}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify(body),
             });
             if (!res.ok) throw new Error();
@@ -70,13 +75,19 @@ const Configuracion = ({ Usuario }) => {
             setForm(prev => ({ ...prev, password: '' }));
             setConfirmarPassword('');
         } catch {
-            setMensaje({ tipo: 'error', texto: 'Error al guardar los cambios. Intenta de nuevo.' });
+            setMensaje({ tipo: 'error', texto: 'Error al guardar los cambios. Intentá de nuevo.' });
         } finally {
             setGuardando(false);
         }
     };
 
-    const handleCerrarSesion = () => navigate('/');
+    // Borra el token y redirige al login
+    const handleCerrarSesion = () => {
+        localStorage.removeItem('Token');
+        window.location.href = '/';
+    };
+
+    // ── estilos ───────────────────────────────────────────────────────────────
 
     const labelStyle = {
         fontFamily: "'Noto Serif', serif",
@@ -124,6 +135,8 @@ const Configuracion = ({ Usuario }) => {
     const focusIn  = e => { e.target.style.borderColor = '#c5a059'; e.target.style.boxShadow = '0 0 0 3px rgba(197,160,89,0.12)'; };
     const focusOut = e => { e.target.style.borderColor = '#d1c5b4'; e.target.style.boxShadow = 'none'; };
 
+    // ── loading ───────────────────────────────────────────────────────────────
+
     if (loading) {
         return (
             <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '300px' }}>
@@ -135,15 +148,16 @@ const Configuracion = ({ Usuario }) => {
         );
     }
 
+    // ── render ────────────────────────────────────────────────────────────────
+
     return (
         <div style={{ maxWidth: '620px' }}>
 
-            {/* Subtítulo */}
             <p className="mb-4" style={{ fontFamily: "'Noto Serif', serif", fontSize: '13px', color: '#7f7667' }}>
                 Gestioná tu información personal y acceso al sistema
             </p>
 
-            {/* Alerta */}
+            {/* alerta */}
             {mensaje && (
                 <div className="mb-4" style={{
                     borderRadius: '10px',
@@ -158,11 +172,10 @@ const Configuracion = ({ Usuario }) => {
                 </div>
             )}
 
-            {/* Card: Datos personales */}
+            {/* datos personales */}
             <div style={cardStyle} className="mb-3">
                 <p style={sectionTitle}>Datos personales</p>
 
-                {/* Email (solo lectura) */}
                 <div className="mb-3">
                     <label style={labelStyle}>Email</label>
                     <input
@@ -176,7 +189,6 @@ const Configuracion = ({ Usuario }) => {
                     </p>
                 </div>
 
-                {/* Nombre completo */}
                 <div className="mb-3">
                     <label style={labelStyle}>Nombre completo</label>
                     <input
@@ -191,7 +203,6 @@ const Configuracion = ({ Usuario }) => {
                     />
                 </div>
 
-                {/* Teléfono */}
                 <div>
                     <label style={labelStyle}>Teléfono</label>
                     <input
@@ -207,14 +218,13 @@ const Configuracion = ({ Usuario }) => {
                 </div>
             </div>
 
-            {/* ── Card: Contraseña ── */}
+            {/* contraseña */}
             <div style={cardStyle} className="mb-4">
                 <p style={sectionTitle}>Cambiar contraseña</p>
                 <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: '12px', color: '#9e9488', marginBottom: '18px' }}>
                     Dejá los campos en blanco si no querés cambiarla.
                 </p>
 
-                {/* Nueva contraseña */}
                 <div className="mb-3">
                     <label style={labelStyle}>Nueva contraseña</label>
                     <div style={{ position: 'relative' }}>
@@ -240,7 +250,6 @@ const Configuracion = ({ Usuario }) => {
                     </div>
                 </div>
 
-                {/* Confirmar contraseña */}
                 <div>
                     <label style={labelStyle}>Confirmar contraseña</label>
                     <input
@@ -268,9 +277,8 @@ const Configuracion = ({ Usuario }) => {
                 </div>
             </div>
 
-            {/*Acciones */}
+            {/* acciones */}
             <div className="d-flex gap-3">
-
                 <button
                     onClick={handleGuardar}
                     disabled={guardando}
@@ -331,7 +339,6 @@ const Configuracion = ({ Usuario }) => {
                 >
                     → Cerrar sesión
                 </button>
-
             </div>
         </div>
     );
