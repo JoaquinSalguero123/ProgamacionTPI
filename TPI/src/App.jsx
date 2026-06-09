@@ -65,7 +65,7 @@ function App() {
             <Route index element={<Inicio />} />
             <Route path="servicios" element={<Servicios />} />
 
-            <Route path="config" element={<Configuracion />} />
+            <Route path="config" element={<Configuracion Usuario={user} />} />
             <Route path="reservar" element={<ReservarTurno />} />
 
             <Route path="agenda" element={<TurnosPage />} />

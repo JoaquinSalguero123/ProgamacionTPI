@@ -1,74 +1,105 @@
-const CardUsuario = ({ nombre, email, password, tipo, cortes }) => {
+const rolesConfig = {
+  0: { label: "Cliente",   bg: "#faeeda", color: "#854f0b" },
+  1: { label: "Estilista", bg: "#e1f5ee", color: "#0f6e56" },
+  2: { label: "Admin",     bg: "#eeedfe", color: "#3c3489" },
+};
 
-  const estadoConfig = {
-    pendiente:  { label: 'Pendientes',  color: '#b8973a' },
-    aprobado:   { label: 'Aprobados',   color: '#27ae60' },
-    finalizado: { label: 'Finalizados', color: '#7f7667' },
-  };
+const initiales = (nombre = "") =>
+  nombre.trim().split(" ").slice(0, 2).map((p) => p[0]?.toUpperCase() ?? "").join("");
+
+const CardUsuario = ({ nombre, email, password, tipo, telefono }) => {
+  const rol = rolesConfig[tipo] ?? rolesConfig[0];
 
   return (
     <div
-      className="d-flex flex-column gap-3 p-3 rounded-3 border bg-white"
-      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = '#c5a059';
-        e.currentTarget.style.boxShadow = '0 8px 28px rgba(119,90,25,0.1)';
+      className="d-flex flex-column gap-0 rounded-3 bg-white border"
+      style={{ cursor: "pointer", transition: "border-color .18s, box-shadow .18s", overflow: "hidden" }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "#c5a059";
+        e.currentTarget.style.boxShadow = "0 6px 24px rgba(119,90,25,0.09)";
       }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = '';
-        e.currentTarget.style.boxShadow = '';
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "";
+        e.currentTarget.style.boxShadow = "";
       }}
     >
+      {/* acento superior */}
+      <div style={{ height: "3px", background: rol.color, opacity: 0.55 }} />
 
-      {/* HEADER */}
-      <div className="d-flex justify-content-between align-items-start">
-        <div>
-          <p className="mb-1 text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.14em', color: '#c5a059' }}>
-            Usuario
-          </p>
-          <h4 className="mb-1 fw-bold fs-6" style={{ color: '#2f3131' }}>
-            {nombre}
-          </h4>
+      <div className="p-3 d-flex flex-column gap-3">
+        {/* fila principal: avatar + info + badge rol (sin badge editar aquí) */}
+        <div className="d-flex align-items-start gap-3">
+          {/* avatar */}
+          <div style={{
+            width: "42px", height: "42px", borderRadius: "50%",
+            background: rol.bg, color: rol.color,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "13px", fontWeight: 700, flexShrink: 0,
+            fontFamily: "'Manrope', sans-serif",
+          }}>
+            {initiales(nombre)}
+          </div>
 
-          {/* EMAIL + PASSWORD en la misma fila */}
-          <div className="d-flex align-items-center gap-2 flex-wrap">
-            <p className="mb-0 small text-secondary">
+          {/* info */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{
+              fontSize: "10px", fontWeight: 700, letterSpacing: "0.13em",
+              textTransform: "uppercase", color: rol.color, margin: "0 0 2px",
+              fontFamily: "'Manrope', sans-serif",
+            }}>
+              {rol.label}
+            </p>
+            <p style={{
+              fontSize: "15px", fontWeight: 600, color: "#2f3131",
+              margin: 0, fontFamily: "'Noto Serif', serif",
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            }}>
+              {nombre}
+            </p>
+            <p style={{
+              fontSize: "12px", color: "#7f7667", margin: "3px 0 0",
+              fontFamily: "'Manrope', sans-serif",
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            }}>
               {email}
             </p>
-            <div className="d-flex align-items-center gap-1 px-2 py-1 rounded-pill bg-light" style={{ width: 'fit-content' }}>
-              <span className="text-uppercase fw-bold flex-shrink-0" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#7f7667' }}>
-                Pass
-              </span>
-              <span className="small" style={{ fontFamily: 'monospace', letterSpacing: '0.05em', color: '#7f7667' }}>
-                {password}
-              </span>
-            </div>
           </div>
 
+          {/* badge rol — única cosa a la derecha del header */}
+          <span style={{
+            fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em",
+            textTransform: "uppercase", padding: "3px 10px", borderRadius: "999px",
+            background: rol.bg, color: rol.color, flexShrink: 0,
+            fontFamily: "'Manrope', sans-serif",
+          }}>
+            {rol.label}
+          </span>
         </div>
-        <span className="badge fw-bold text-uppercase" style={{ background: '#2f3131', color: '#e9c176', letterSpacing: '0.08em' }}>
-          {tipo}
-        </span>
-      </div>
 
-      {/* CORTES POR ESTADO */}
-      <div className="d-flex gap-2 pt-2" style={{ borderTop: '1px solid #d1c5b4' }}>
-        {Object.entries(estadoConfig).map(([key, config]) => (
-          <div
-            key={key}
-            className="flex-grow-1 rounded-2 p-2 text-center bg-light"
-            style={{ borderTop: `3px solid ${config.color}` }}
-          >
-            <span className="d-block fw-bold" style={{ fontSize: '20px', color: '#2f3131' }}>
-              {cortes?.[key] ?? 0}
+        {/* fila inferior: pills de datos */}
+        <div className="d-flex gap-2 flex-wrap pt-2" style={{ borderTop: "1px solid #f0ece4" }}>
+          {telefono && (
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: "5px",
+              padding: "4px 10px", borderRadius: "999px",
+              background: "#f9f6f1", border: "1px solid #e8e0d4",
+              fontSize: "12px", color: "#7f7667",
+              fontFamily: "'Manrope', sans-serif",
+            }}>
+              📞 {telefono}
             </span>
-            <span className="text-uppercase fw-bold" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#7f7667' }}>
-              {config.label}
-            </span>
-          </div>
-        ))}
+          )}
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: "5px",
+            padding: "4px 10px", borderRadius: "999px",
+            background: "#f9f6f1", border: "1px solid #e8e0d4",
+            fontSize: "12px", color: "#7f7667",
+            fontFamily: "monospace",
+          }}>
+            🔒 {password ? "••••••" : "—"}
+          </span>
+        </div>
       </div>
-
     </div>
   );
 };
