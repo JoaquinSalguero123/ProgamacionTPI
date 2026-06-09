@@ -20,7 +20,7 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
 
         if (usuario_encontrado) {
           setIsSignedIn(true);
-          navigate("/home");
+          navigate("/");
         } else {
           alert("Credenciales incorrectas.");
         }
