@@ -66,9 +66,9 @@ function App() {
             <Route path="servicios" element={<Servicios />} />
 
             <Route path="config" element={<Configuracion Usuario={user} />} />
-            <Route path="reservar" element={<ReservarTurno />} />
+            <Route path="reservar" element={<ReservarTurno usuario={user}/>} />
 
-            <Route path="agenda" element={<TurnosPage />} />
+            <Route path="agenda" element={<TurnosPage usuario={user} />} />
             <Route path="usuarios" element={<UsuariosPage />} />
 
           </Route>
