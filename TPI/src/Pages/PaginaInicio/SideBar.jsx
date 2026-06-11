@@ -1,11 +1,22 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 
-const SideBar = ({ user, handleCerrarSesion, isSignedIn }) => {
+const SideBar = ({ user, isSignedIn }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
   
   const role = user?.role ?? null;
+
+  const handleAuthClick = () => {
+    if (isSignedIn) {
+      logout();
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  };
 
   const navBtnStyle = {
     fontFamily: "'Noto Serif', serif",
@@ -183,7 +194,7 @@ const SideBar = ({ user, handleCerrarSesion, isSignedIn }) => {
         </button>
 
         <button
-          onClick={() => isSignedIn ? handleCerrarSesion() : navigate("/login")}
+          onClick={handleAuthClick}
           style={{
             padding: "13px 24px",
             background: "transparent",

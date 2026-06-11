@@ -1,11 +1,22 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 
-const Header = ({ user, handleCerrarSesion, isSignedIn }) => {
+const Header = ({ user, isSignedIn }) => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const role = user?.role ?? null;
+
+    const handleAuthClick = () => {
+        if (isSignedIn) {
+            logout();
+            navigate("/");
+        } else {
+            navigate("/login");
+        }
+    };
 
     const navBtnStyle = {
         fontFamily: "'Noto Serif', serif",
@@ -110,7 +121,7 @@ const Header = ({ user, handleCerrarSesion, isSignedIn }) => {
 
                 </div>
                 <button
-                    onClick={() => isSignedIn ? handleCerrarSesion() : navigate("/login")}
+                    onClick={handleAuthClick}
                     className="border-0 fw-semibold px-4 py-2"
                     style={{
                         background: "linear-gradient(to right, #775a19, #c5a059)",
