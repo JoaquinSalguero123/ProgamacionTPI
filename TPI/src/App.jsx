@@ -45,13 +45,13 @@ function App() {
               </Protected>} />
             <Route path="reservar" element={
               <Protected user={user} roles_requeridos={[ROLES.USER, ROLES.ADMIN, ROLES.SUPERADMIN]}>
-                <ReservarTurno />
+                <ReservarTurno usuario={user}/>
               </Protected>} />
 
             {/* REQUIERE ADMIN */}
             <Route path="agenda" element={
               <Protected user={user} roles_requeridos={[ROLES.ADMIN, ROLES.SUPERADMIN]}>
-                <TurnosPage />
+                <TurnosPage usuario={user} />
               </Protected>} />
 
             {/* REQUIERE SUPERADMIN */}

@@ -7,44 +7,78 @@ const estados = {
   3: { texto: "Finalizado", color: "primary" }
 };
 
-
-const CardTurno = ({ fecha, hora_turno, email_cliente, id_servicio, email_estilista, estado }) => {
+const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_estilista, estado, usuario }) => {
 
   const [servicio, setServicio] = useState([]);
+  const [estilista, setEstilista] = useState([]);
+  const [estadoActual, setEstadoActual] = useState(estado);
+
   useEffect(() => {
-    fetch(`http://localhost:3000/servicios/${id_servicio}`,{
-        headers: {
-          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
-        }
-  })
+    fetch(`http://localhost:3000/servicios/${id_servicio}`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
+    })
       .then(res => res.json())
       .then(data => setServicio(data))
       .catch(error => console.error(error));
   }, []);
 
-  const [estilista, setEstilista] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3000/usuarios/${email_estilista}`,{
-        headers: {
-          "Authorization" : ` Bearer ${localStorage.getItem("Token")} `
-        }
-  })
+    fetch(`http://localhost:3000/usuarios/${email_estilista}`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
+    })
       .then(res => res.json())
       .then(data => setEstilista(data))
       .catch(error => console.error(error));
   }, []);
 
-  // formatear la fecha en Dia/Mes
   const diaMes = new Date(fecha).toLocaleDateString("es-AR", {
     day: "2-digit",
     month: "2-digit"
   });
 
-  // solo estados validos
-  const estadoInfo = estados[estado] || {
-    texto: "Desconocido",
-    color: "dark"
+  const estadoInfo = estados[estadoActual] || { texto: "Desconocido", color: "dark" };
+
+  const finalizarTurno = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/turnos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+        },
+        body: JSON.stringify({ estado: 3 }),
+      });
+
+      if (res.ok) {
+        setEstadoActual(3);
+      } else {
+        alert("Error al actualizar el turno.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const rechazarTurno = async () => {
+  try {
+    const res = await fetch(`http://localhost:3000/turnos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+      },
+      body: JSON.stringify({ estado: 2 }),
+    });
+
+    if (res.ok) {
+      setEstadoActual(2);
+    } else {
+      alert("Error al rechazar el turno.");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <div
@@ -81,10 +115,50 @@ const CardTurno = ({ fecha, hora_turno, email_cliente, id_servicio, email_estili
           </span>
         </div>
 
+        {/* ESTADO */}
         <div className="d-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light" style={{ width: 'fit-content' }}>
           <span className={`rounded-circle bg-${estadoInfo.color} d-inline-block flex-shrink-0`} style={{ width: '7px', height: '7px' }} />
           <span className="small text-secondary">{estadoInfo.texto}</span>
         </div>
+
+        {(usuario?.role === 1 || usuario?.role === 2) && estadoActual === 0 && (
+  <div className="d-flex gap-2 mt-2">
+    <button
+      onClick={finalizarTurno}
+      className="border-0"
+      style={{
+        padding: "6px 16px",
+        borderRadius: "999px",
+        background: "linear-gradient(to right, #775a19, #c5a059)",
+        color: "white",
+        fontSize: "10px",
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        cursor: "pointer",
+      }}
+    >
+      Finalizado
+    </button>
+    <button
+      onClick={rechazarTurno}
+      className="border-0"
+      style={{
+        padding: "6px 16px",
+        borderRadius: "999px",
+        background: "linear-gradient(to right, #ba1a1a, #e05555)",
+        color: "white",
+        fontSize: "10px",
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        cursor: "pointer",
+      }}
+    >
+      Rechazar
+    </button>
+  </div>
+)}
 
       </div>
     </div>
