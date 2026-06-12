@@ -1,6 +1,6 @@
 import { Routes, Route, BrowserRouter, } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import ErrorPage from "./components/common/ErrorPage";
 import PaginaPrincipal from "./Pages/PaginaInicio/PaginaPrincipal.jsx";
 import LoginPages from "./Pages/Login/LoginPages.jsx";
 import Protected from "./Pages/Login/Protected.jsx";
@@ -61,7 +61,10 @@ function App() {
 
           </Route>
 
-
+          
+          <Route path="/403" element={<ErrorPage type={403} />} />
+          <Route path="*" element={<ErrorPage type={404} />} />
+          
         </Routes>
       </BrowserRouter>
     </div>
