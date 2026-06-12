@@ -1,11 +1,5 @@
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
-
-import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, BrowserRouter, } from "react-router-dom";
+import { Routes, Route, BrowserRouter, } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { jwtDecode } from 'jwt-decode';
 
 import PaginaPrincipal from "./Pages/PaginaInicio/PaginaPrincipal.jsx";
 import LoginPages from "./Pages/Login/LoginPages.jsx";
@@ -17,32 +11,11 @@ import ReservarTurno from "./Pages/PaginaInicio/PaginasNav/ReservarTurno";
 import Servicios from "./Pages/PaginaInicio/PaginasNav/Servicios";
 import Configuracion from "./Pages/PaginaInicio/PaginasNav/Configuracion";
 
-
+import { useAuth } from "./context/AuthContext.jsx";
 
 function App() {
 
-  const [isSignedIn, setIsSignedIn] = useState(!!localStorage.getItem("Token"));
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("Token");
-
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-
-        setUser({
-          email: decoded.email,
-          role: Number(decoded.role),
-        });
-
-      } catch {
-        localStorage.removeItem("Token");
-        setUser(null);
-        setIsSignedIn(false);
-      }
-    }
-  }, [isSignedIn]);
+  const { isSignedIn, user } = useAuth();
 
 
   const ROLES = {
@@ -57,19 +30,34 @@ function App() {
         <Routes>
 
           {/* PUBLICO */}
-          <Route path="/login" element={<LoginPages isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
+          <Route path="/login" element={<LoginPages />} />
 
           {/* LAYOUT */}
-          <Route path="/" element={<PaginaPrincipal isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} user={user} />}>
+          <Route path="/" element={<PaginaPrincipal isSignedIn={isSignedIn} user={user} />}>
 
             <Route index element={<Inicio />} />
             <Route path="servicios" element={<Servicios />} />
 
-            <Route path="config" element={<Configuracion Usuario={user} />} />
-            <Route path="reservar" element={<ReservarTurno usuario={user}/>} />
+            {/* REQUIERE USUARIO */}
+            <Route path="config" element={
+              <Protected user={user} roles_requeridos={[ROLES.USER, ROLES.ADMIN, ROLES.SUPERADMIN]}>
+                <Configuracion Usuario={user} />
+              </Protected>} />
+            <Route path="reservar" element={
+              <Protected user={user} roles_requeridos={[ROLES.USER, ROLES.ADMIN, ROLES.SUPERADMIN]}>
+                <ReservarTurno usuario={user}/>
+              </Protected>} />
 
-            <Route path="agenda" element={<TurnosPage usuario={user} />} />
-            <Route path="usuarios" element={<UsuariosPage />} />
+            {/* REQUIERE ADMIN */}
+            <Route path="agenda" element={
+              <Protected user={user} roles_requeridos={[ROLES.ADMIN, ROLES.SUPERADMIN]}>
+                <TurnosPage usuario={user} />
+              </Protected>} />
+
+            {/* REQUIERE SUPERADMIN */}
+            <Route path="usuarios" element={<Protected user={user} roles_requeridos={[ROLES.SUPERADMIN]}>
+                <UsuariosPage />
+              </Protected>} />
 
           </Route>
 

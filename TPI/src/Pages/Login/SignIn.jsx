@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import users from "../../../BDHarcodeada/Usuarios.json";
-import Usuario from "../../Models/UsuariosModel.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
-const SignIn = ({ setIsSignedIn, setSignedUp }) => {
+const SignIn = ({ setSignedUp }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
@@ -16,10 +16,10 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
     e.preventDefault();
 
     ValidarInicioSesion(email, password)
-      .then(usuario_encontrado => {
+      .then(token => {
 
-        if (usuario_encontrado) {
-          setIsSignedIn(true);
+        if (token) {
+          login(token);
           navigate("/");
         } else {
           alert("Credenciales incorrectas.");
@@ -49,15 +49,7 @@ const SignIn = ({ setIsSignedIn, setSignedUp }) => {
 
         return res.json(); // <- IMPORTANTE
       })
-      .then((token) => {
-        if(token){
-          console.log("TOKEN GUARDADO",token);
-          localStorage.setItem("Token", token);
-          return true;
-        }else{
-          return false;
-        }
-      })
+      .then((token) => token || null)
       .catch((err) => {
         console.log(err);
         return null;

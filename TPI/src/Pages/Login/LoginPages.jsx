@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 
-const LoginPages = ({ setIsSignedIn }) => {
+const LoginPages = () => {
 
   const [signedUp, setSignedUp] = useState(false);
 
@@ -41,7 +41,7 @@ const LoginPages = ({ setIsSignedIn }) => {
         {signedUp ? (
           <SignUp setSignedUp={setSignedUp} />
         ) : (
-          <SignIn setIsSignedIn={setIsSignedIn} setSignedUp={setSignedUp} />
+          <SignIn setSignedUp={setSignedUp} />
         )}
       </div>
 

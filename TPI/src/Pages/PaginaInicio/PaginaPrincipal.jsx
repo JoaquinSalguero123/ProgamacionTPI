@@ -1,19 +1,10 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import SideBar from "./SideBar";
 import Header from './Header';
 
 
 
-const PaginaPrincipal = ({isSignedIn, setIsSignedIn, user}) => {
-
-
-  const navigate = useNavigate();
-
-  const handleCerrarSesion = () => {
-    localStorage.removeItem("Token");
-    setIsSignedIn(false);
-    window.location.href = "/";
-  };
+const PaginaPrincipal = ({isSignedIn, user}) => {
 
   return (
     <div
@@ -27,7 +18,6 @@ const PaginaPrincipal = ({isSignedIn, setIsSignedIn, user}) => {
       {/* SIDEBAR */}
       <SideBar 
       user={user}
-      handleCerrarSesion={handleCerrarSesion} 
       isSignedIn={isSignedIn}/>
 
 
@@ -36,7 +26,6 @@ const PaginaPrincipal = ({isSignedIn, setIsSignedIn, user}) => {
         {/* HEADER */}
         <Header 
         user={user}
-        handleCerrarSesion={handleCerrarSesion}
         isSignedIn={isSignedIn}/>
 
         {/* CONTENIDO */}

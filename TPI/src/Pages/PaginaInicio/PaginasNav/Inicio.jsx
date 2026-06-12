@@ -1,6 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Inicio = ({ setActiveView }) => {
+
+  const navigate = useNavigate();
+
   return (
     <div style={{ fontFamily: "'Manrope', sans-serif", background: "#f9f9f9" }}>
       {/* HERO */}
@@ -55,7 +59,7 @@ const Inicio = ({ setActiveView }) => {
 
               <div className="d-flex flex-wrap gap-3">
                 <button
-                  onClick={() => setActiveView("reservar")}
+                  onClick={() => navigate("/reservar")}
                   className="border-0 fw-semibold px-4 py-3"
                   style={{
                     background: "#c5a059",
