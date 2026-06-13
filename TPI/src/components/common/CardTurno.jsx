@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const estados = {
   0: { texto: "Pendiente", color: "secondary" },
@@ -31,10 +33,10 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
       .catch(error => console.error(error));
   }, []);
 
-  const diaMes = new Date(fecha).toLocaleDateString("es-AR", {
+  const diaMes = new Date(fecha + "T00:00:00").toLocaleDateString("es-AR", {
     day: "2-digit",
     month: "2-digit"
-  });
+});
 
   const estadoInfo = estados[estadoActual] || { texto: "Desconocido", color: "dark" };
 
@@ -52,12 +54,33 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
       if (res.ok) {
         setEstadoActual(3);
       } else {
-        alert("Error al actualizar el turno.");
+        toast.error("Error al actualizar el turno.");
       }
     } catch (err) {
       console.error(err);
     }
   };
+
+  const aceptarTurno = async () => {
+  try {
+    const res = await fetch(`http://localhost:3000/turnos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+      },
+      body: JSON.stringify({ estado: 1 }),
+    });
+
+    if (res.ok) {
+      setEstadoActual(1);
+    } else {
+      toast.error("Error al aceptar el turno.");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const rechazarTurno = async () => {
   try {
@@ -73,7 +96,7 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
     if (res.ok) {
       setEstadoActual(2);
     } else {
-      alert("Error al rechazar el turno.");
+      toast.error("Error al rechazar el turno.");
     }
   } catch (err) {
     console.error(err);
@@ -93,6 +116,9 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
         e.currentTarget.style.boxShadow = '';
       }}
     >
+      <>
+        <ToastContainer />
+      </>
       <div className="d-flex flex-column flex-grow-1">
 
         <p className="mb-1 text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.14em', color: '#c5a059' }}>
@@ -124,12 +150,12 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
         {(usuario?.role === 1 || usuario?.role === 2) && estadoActual === 0 && (
   <div className="d-flex gap-2 mt-2">
     <button
-      onClick={finalizarTurno}
+      onClick={aceptarTurno}
       className="border-0"
       style={{
         padding: "6px 16px",
         borderRadius: "999px",
-        background: "linear-gradient(to right, #775a19, #c5a059)",
+        background: "linear-gradient(to right, #1a6b2f, #4caf70)",
         color: "white",
         fontSize: "10px",
         fontWeight: 700,
@@ -138,8 +164,9 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
         cursor: "pointer",
       }}
     >
-      Finalizado
+      Aceptar
     </button>
+    
     <button
       onClick={rechazarTurno}
       className="border-0"
@@ -156,6 +183,24 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
       }}
     >
       Rechazar
+    </button>
+
+    <button
+      onClick={finalizarTurno}
+      className="border-0"
+      style={{
+        padding: "6px 16px",
+        borderRadius: "999px",
+        background: "linear-gradient(to right, #775a19, #c5a059)",
+        color: "white",
+        fontSize: "10px",
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        cursor: "pointer",
+      }}
+    >
+      Finalizado
     </button>
   </div>
 )}

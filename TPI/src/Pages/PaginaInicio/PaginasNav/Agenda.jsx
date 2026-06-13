@@ -3,27 +3,42 @@ import CardTurno from "../../../components/common/CardTurno";
 
 const TurnosPage = ({ usuario }) => {
   const [turnos, setTurnos] = useState([]);
+  const [filtroEstado, setFiltroEstado] = useState("todos");
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const turnosFiltrados = turnos
+    .filter(turno => new Date(turno.fecha + "T00:00:00") >= hoy)
+    .filter(turno => {
+      if (filtroEstado === "todos") return true;
+      return turno.estado === Number(filtroEstado);
+    });
 
   useEffect(() => {
     fetch("http://localhost:3000/turnos", {
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("Token")}`
-      }
+      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
     })
       .then(res => res.json())
       .then(data => {
         let filtrados = data;
-
         if (usuario?.role === 0) {
           filtrados = data.filter(t => t.email_cliente === usuario.email);
         } else if (usuario?.role === 1) {
           filtrados = data.filter(t => t.email_estilista === usuario.email);
         }
-
         setTurnos(filtrados);
       })
       .catch(error => console.error(error));
   }, [usuario]);
+
+  const botones = [
+    { label: "Todos", value: "todos" },
+    { label: "Pendientes", value: "0" },
+    { label: "Aceptados", value: "1" },
+    { label: "Rechazados", value: "2" },
+    { label: "Finalizados", value: "3" },
+  ];
 
   return (
     <>
@@ -36,10 +51,36 @@ const TurnosPage = ({ usuario }) => {
         </h2>
       </div>
 
-      {turnos.length === 0 ? (
+      {/* Filtros */}
+      <div className="d-flex gap-2 mb-4 flex-wrap">
+        {botones.map(btn => (
+          <button
+            key={btn.value}
+            onClick={() => setFiltroEstado(btn.value)}
+            className="border-0"
+            style={{
+              padding: "6px 16px",
+              borderRadius: "999px",
+              background: filtroEstado === btn.value
+                ? "linear-gradient(to right, #775a19, #c5a059)"
+                : "#f0ece4",
+              color: filtroEstado === btn.value ? "white" : "#7f7667",
+              fontSize: "10px",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+          >
+            {btn.label}
+          </button>
+        ))}
+      </div>
+
+      {turnosFiltrados.length === 0 ? (
         <p style={{ color: '#7f7667', fontStyle: 'italic' }}>No hay turnos para mostrar.</p>
       ) : (
-        turnos.map((turno) => (
+        turnosFiltrados.map((turno) => (
           <CardTurno
             key={turno.id}
             id={turno.id}

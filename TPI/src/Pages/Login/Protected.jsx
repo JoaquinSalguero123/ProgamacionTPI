@@ -6,13 +6,11 @@ const Protected = ({children, roles_requeridos = []}) => {
     const {user, authToken} = useContext(AuthContext);
 
     if(!authToken){
-        alert("Necesitas iniciar sesión")
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" state={{ mensaje: "Necesitas iniciar sesión."}}/>;
     }
                                
     if(roles_requeridos && user && !roles_requeridos.some((role) => role === user.role)){
-        alert("No tienes permiso")
-        return <Navigate to="/" />;
+        return <Navigate to="/" state={{ mensaje: "No tienes permiso."}}/>;
     }
 
     return children;

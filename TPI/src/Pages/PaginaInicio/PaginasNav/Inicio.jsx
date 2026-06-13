@@ -1,9 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const Inicio = ({ setActiveView }) => {
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+    useEffect(() => {
+        if(location.state?.mensaje){
+            toast.error(location.state.mensaje);
+        }
+    }, []);
 
   return (
     <div style={{ fontFamily: "'Manrope', sans-serif", background: "#f9f9f9" }}>
@@ -17,6 +31,9 @@ const Inicio = ({ setActiveView }) => {
           background: "#f9f9f9",
         }}
       >
+        <>
+          <ToastContainer/>
+        </>
         <div className="container py-5">
           <div className="row align-items-center g-5">
             {/* Texto izquierda */}
