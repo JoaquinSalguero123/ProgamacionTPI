@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import SideBar from "./SideBar";
+//import SideBar from "./SideBar";
 import Header from './Header';
 
 
@@ -15,11 +15,14 @@ const PaginaPrincipal = ({isSignedIn, user}) => {
         color: "#1a1c1c",
       }}
     >
-      {/* SIDEBAR */}
+      {/* SIDEBAR 
+      
       <SideBar 
       user={user}
       isSignedIn={isSignedIn}/>
 
+      */}
+      
 
       {/* MAIN */}
       <main className="flex-grow-1 overflow-auto d-flex flex-column">
