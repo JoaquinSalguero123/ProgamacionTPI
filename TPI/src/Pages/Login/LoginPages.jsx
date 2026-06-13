@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
+import { useLocation } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPages = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.mensaje) {
+      toast.error(location.state.mensaje);
+    }
+  }, []);
+
 
   const [signedUp, setSignedUp] = useState(false);
 
-  
+
 
   return (
+
     <div className="d-flex flex-column flex-md-row min-vh-100">
+      <>
+        <ToastContainer />
+      </>
 
       {/* Panel Izquierdo - Imagen + Texto */}
       <div className="panel-left d-none d-md-flex flex-column justify-content-end col-md-6 col-lg-7 position-relative overflow-hidden"
-      style={{
+        style={{
           backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCsB-FRUebu3_g7FLhoMryjF7ixsgfVBAwejJ-g8AsY_BcmmLUVg7j4_-IKKyxAjAppU_N5YRbFMZSn4IKXECi1JZRrc3yU8OP1OllTXMdn6tJBTcrYlqI1kl3Z6sXJtR5wbLdgEpTLufFrXpeFUp9ijo2ViamAQASlXDPNBpMrND77C8Goeef_p1-VvybNxfT4fLyptqjztvU0r13je1-JjupcdsY546aaICbPNYQNdJ98Cd5vTipagZNIF3MRpG8IIIjAEYhaL58')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}>
-        
+
         {/* Brand fija esquina superior - solo lg+ */}
         <span className="brand d-none d-lg-block position-fixed top-0 start-0 mt-5 ms-5 fst-italic fs-4 text-light">
           The Atelier

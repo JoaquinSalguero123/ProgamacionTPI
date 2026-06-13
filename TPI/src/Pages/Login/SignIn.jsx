@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignIn = ({ setSignedUp }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ const SignIn = ({ setSignedUp }) => {
           login(token);
           navigate("/");
         } else {
-          alert("Credenciales incorrectas.");
+          toast.error("Credenciales incorrectas.");
         }
 
       });
@@ -59,6 +61,9 @@ const SignIn = ({ setSignedUp }) => {
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center flex-grow-1 px-3 px-lg-5 py-5 bg-light min-vh-100">
+      <>
+        <ToastContainer/>
+      </>
       <div className="w-100" style={{ maxWidth: "28rem" }}>
 
         {/* Mobile brand */}
