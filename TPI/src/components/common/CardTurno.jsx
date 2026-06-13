@@ -9,29 +9,9 @@ const estados = {
   3: { texto: "Finalizado", color: "primary" }
 };
 
-const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_estilista, estado, usuario }) => {
+const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, precio_servicio, nombre_estilista, estado, usuario }) => {
 
-  const [servicio, setServicio] = useState([]);
-  const [estilista, setEstilista] = useState([]);
   const [estadoActual, setEstadoActual] = useState(estado);
-
-  useEffect(() => {
-    fetch(`http://localhost:3000/servicios/${id_servicio}`, {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
-    })
-      .then(res => res.json())
-      .then(data => setServicio(data))
-      .catch(error => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    fetch(`http://localhost:3000/usuarios/${email_estilista}`, {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
-    })
-      .then(res => res.json())
-      .then(data => setEstilista(data))
-      .catch(error => console.error(error));
-  }, []);
 
   const diaMes = new Date(fecha + "T00:00:00").toLocaleDateString("es-AR", {
     day: "2-digit",
@@ -126,18 +106,21 @@ const CardTurno = ({ id, fecha, hora_turno, email_cliente, id_servicio, email_es
         </p>
 
         <h4 className="mb-2 fw-bold fs-6 m-0" style={{ color: '#2f3131' }}>
-          {servicio.nombre_servicio}
+          {nombre_servicio}
         </h4>
 
         <div className="d-flex flex-wrap gap-2 my-2">
           <span className="badge fw-bold text-uppercase" style={{ background: '#2f3131', color: '#e9c176', letterSpacing: '0.08em' }}>
-            ${servicio.precio}
+            ${precio_servicio}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
             Fecha: {diaMes} a las {hora_turno}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
-            Estilista: {estilista.nombreCompleto_usuario}
+            Estilista: {nombre_estilista}
+          </span>
+          <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
+            Cliente: {nombre_cliente}
           </span>
         </div>
 
