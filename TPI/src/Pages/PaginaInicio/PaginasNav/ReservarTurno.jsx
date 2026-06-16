@@ -21,11 +21,11 @@ const ReservarTurno = ({ usuario }) => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3000/usuarios", {
+    fetch("http://localhost:3000/usuarios/peluqueros", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
     })
       .then((res) => res.json())
-      .then((data) => setPeluqueros(data.filter((u) => u.id_permisos === 1)));
+      .then((data) => setPeluqueros(data));
   }, []);
 
   useEffect(() => {
