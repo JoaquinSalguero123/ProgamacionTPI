@@ -10,6 +10,7 @@ import TurnosPage from "./Pages/PaginaInicio/PaginasNav/Agenda";
 import ReservarTurno from "./Pages/PaginaInicio/PaginasNav/ReservarTurno";
 import Servicios from "./Pages/PaginaInicio/PaginasNav/Servicios";
 import Configuracion from "./Pages/PaginaInicio/PaginasNav/Configuracion";
+import CatalogosPage from "./Pages/PaginaInicio/PaginasNav/Catalogos";
 
 import { useAuth } from "./context/AuthContext.jsx";
 
@@ -37,7 +38,8 @@ function App() {
 
             <Route index element={<Inicio />} />
             <Route path="servicios" element={<Servicios />} />
-
+            <Route path="catalogos" element={<CatalogosPage user={user} />} />
+            
             {/* REQUIERE USUARIO */}
             <Route path="config" element={
               <Protected user={user} roles_requeridos={[ROLES.USER, ROLES.ADMIN, ROLES.SUPERADMIN]}>

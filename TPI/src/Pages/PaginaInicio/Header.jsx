@@ -10,12 +10,8 @@ const Header = ({ user, isSignedIn }) => {
   const role = user?.role ?? null;
 
   const handleAuthClick = () => {
-    if (isSignedIn) {
-      logout();
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
+    if (isSignedIn) { logout(); navigate("/"); }
+    else navigate("/login");
   };
 
   const navBtnStyle = {
@@ -30,14 +26,11 @@ const Header = ({ user, isSignedIn }) => {
 
   const getNavStyle = (path) => {
     const isActive = location.pathname === path;
-
     return {
       ...navBtnStyle,
       color: isActive ? "#775a19" : "#7f7667",
       fontWeight: isActive ? 700 : 400,
-      borderBottom: isActive
-        ? "2px solid #775a19"
-        : "2px solid transparent",
+      borderBottom: isActive ? "2px solid #775a19" : "2px solid transparent",
       paddingBottom: "2px",
     };
   };
@@ -53,107 +46,49 @@ const Header = ({ user, isSignedIn }) => {
           zIndex: 50,
         }}
       >
-        {/* FILA 1 */}
         <div className="mb-2">
-          <span
-            className="fst-italic"
-            style={{
-              fontFamily: "'Noto Serif', serif",
-              fontSize: "16px",
-              color: "#c5a059",
-            }}
-          >
+          <span className="fst-italic" style={{ fontFamily: "'Noto Serif', serif", fontSize: "16px", color: "#c5a059" }}>
             {"Buenos días, " + (user?.email ?? "Bienvenido")}
           </span>
         </div>
 
-        {/* FILA 2 */}
         <div className="d-flex justify-content-between align-items-center">
-          <div
-            style={{
-              fontFamily: "'Noto Serif', serif",
-              fontStyle: "italic",
-              fontSize: "22px",
-              color: "#2f3131",
-            }}
-          >
+          <div style={{ fontFamily: "'Noto Serif', serif", fontStyle: "italic", fontSize: "22px", color: "#2f3131" }}>
             The Atelier
           </div>
 
-          {/* DESKTOP */}
+          {/* DESKTOP NAV */}
           <div className="d-none d-md-flex align-items-center gap-4">
-            <button
-              onClick={() => navigate("/")}
-              style={getNavStyle("/")}
-            >
-              Atelier
-            </button>
-
-            <button
-              onClick={() => navigate("/servicios")}
-              style={getNavStyle("/servicios")}
-            >
-              Servicios
-            </button>
+            <button onClick={() => navigate("/")} style={getNavStyle("/")}>Atelier</button>
+            <button onClick={() => navigate("/servicios")} style={getNavStyle("/servicios")}>Servicios</button>
+            <button onClick={() => navigate("/catalogos")} style={getNavStyle("/catalogos")}>Catálogo</button>
 
             {role >= 1 && (
-              <button
-                onClick={() => navigate("/agenda")}
-                style={getNavStyle("/agenda")}
-              >
-                Agenda
-              </button>
+              <button onClick={() => navigate("/agenda")} style={getNavStyle("/agenda")}>Agenda</button>
             )}
-
             {role === 2 && (
-              <button
-              style={getNavStyle("/usuarios")}
-              onClick={() => navigate("/usuarios")}
-                >
-                Usuarios
-                </button>
-                )}
-
+              <button onClick={() => navigate("/usuarios")} style={getNavStyle("/usuarios")}>Usuarios</button>
+            )}
             {role !== null && (
-              <button
-                onClick={() => navigate("/config")}
-                style={getNavStyle("/config")}
-              >
-                Configuración
-              </button>
+              <button onClick={() => navigate("/config")} style={getNavStyle("/config")}>Configuración</button>
             )}
           </div>
 
-          {/* MOBILE */}
-          <button
-            className="btn d-md-none"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#mobileMenu"
-          >
-            ☰
-          </button>
+          {/* MOBILE toggle */}
+          <button className="btn d-md-none" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">☰</button>
 
-          {/* DESKTOP LOGIN */}
+          {/* DESKTOP login */}
           <button
             onClick={handleAuthClick}
             className="border-0 fw-semibold px-4 py-2 d-none d-md-block"
-            style={{
-              background:
-                "linear-gradient(to right, #775a19, #c5a059)",
-              color: "white",
-              borderRadius: "999px",
-              fontSize: "14px",
-            }}
+            style={{ background: "linear-gradient(to right,#775a19,#c5a059)", color: "white", borderRadius: "999px", fontSize: "14px" }}
           >
             {isSignedIn ? "Cerrar sesión" : "Iniciar sesión"}
           </button>
         </div>
       </header>
 
-      <MobileMenu
-        user={user}
-        isSignedIn={isSignedIn}
-      />
+      <MobileMenu user={user} isSignedIn={isSignedIn} />
     </>
   );
 };
