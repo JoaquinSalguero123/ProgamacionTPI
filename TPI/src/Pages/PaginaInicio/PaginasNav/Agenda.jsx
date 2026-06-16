@@ -17,21 +17,25 @@ const TurnosPage = ({ usuario }) => {
 
   useEffect(() => {
     fetch("http://localhost:3000/turnos", {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("Token")}` }
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("Token")}`
+      }
     })
       .then(res => res.json())
       .then(data => {
         let filtrados = data;
+
         if (usuario?.role === 0) {
           filtrados = data.filter(t => t.email_cliente === usuario.email);
         } else if (usuario?.role === 1) {
           filtrados = data.filter(t => t.email_estilista === usuario.email);
         }
+
         setTurnos(filtrados);
       })
       .catch(error => console.error(error));
   }, [usuario]);
-
+  
   const botones = [
     { label: "Todos", value: "todos" },
     { label: "Pendientes", value: "0" },
@@ -39,7 +43,6 @@ const TurnosPage = ({ usuario }) => {
     { label: "Rechazados", value: "2" },
     { label: "Finalizados", value: "3" },
   ];
-
   return (
     <>
       <div className="mb-4">
@@ -86,9 +89,10 @@ const TurnosPage = ({ usuario }) => {
             id={turno.id}
             fecha={turno.fecha}
             hora_turno={turno.hora_turno}
-            email_cliente={turno.email_cliente}
-            id_servicio={turno.id_servicio}
-            email_estilista={turno.email_estilista}
+            nombre_cliente={turno.cliente.nombreCompleto_usuario}
+            nombre_servicio={turno.servicio.nombre_servicio}
+            precio_servicio={turno.servicio.precio}
+            nombre_estilista={turno.estilista.nombreCompleto_usuario}
             estado={turno.estado}
             usuario={usuario}
           />

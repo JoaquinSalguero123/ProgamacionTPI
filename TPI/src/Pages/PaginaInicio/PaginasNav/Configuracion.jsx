@@ -22,9 +22,7 @@ const Configuracion = ({ Usuario }) => {
 
     // Cargar datos del usuario logueado
     useEffect(() => {
-        if (!Usuario?.email) return;
-
-        fetch(`http://localhost:3000/usuarios/${encodeURIComponent(Usuario.email)}`, {
+        fetch("http://localhost:3000/usuarios/me", {
             headers: authHeaders(),
         })
             .then(res => {
@@ -42,7 +40,7 @@ const Configuracion = ({ Usuario }) => {
                 setMensaje({ tipo: 'error', texto: 'No se pudieron cargar los datos del usuario.' });
             })
             .finally(() => setLoading(false));
-    }, [Usuario]);
+    }, []);
 
     const handleChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -63,9 +61,9 @@ const Configuracion = ({ Usuario }) => {
             telefono: form.telefono,
         };
         if (form.password) body.password = form.password;
-
+        
         try {
-            const res = await fetch(`http://localhost:3000/usuarios/${encodeURIComponent(Usuario.email)}`, {
+            const res = await fetch(`http://localhost:3000/usuarios/me`, {
                 method: 'PUT',
                 headers: authHeaders(),
                 body: JSON.stringify(body),
@@ -132,7 +130,7 @@ const Configuracion = ({ Usuario }) => {
         borderBottom: '1px solid #ede5d8',
     };
 
-    const focusIn  = e => { e.target.style.borderColor = '#c5a059'; e.target.style.boxShadow = '0 0 0 3px rgba(197,160,89,0.12)'; };
+    const focusIn = e => { e.target.style.borderColor = '#c5a059'; e.target.style.boxShadow = '0 0 0 3px rgba(197,160,89,0.12)'; };
     const focusOut = e => { e.target.style.borderColor = '#d1c5b4'; e.target.style.boxShadow = 'none'; };
 
     // ── loading ───────────────────────────────────────────────────────────────
@@ -165,8 +163,8 @@ const Configuracion = ({ Usuario }) => {
                     fontFamily: "'Manrope', sans-serif",
                     padding: '12px 16px',
                     background: mensaje.tipo === 'exito' ? '#f0faf4' : '#fdf2f2',
-                    color:      mensaje.tipo === 'exito' ? '#1e6e42'  : '#8b2020',
-                    border:    `1px solid ${mensaje.tipo === 'exito' ? '#b6e4ca' : '#f0b8b8'}`,
+                    color: mensaje.tipo === 'exito' ? '#1e6e42' : '#8b2020',
+                    border: `1px solid ${mensaje.tipo === 'exito' ? '#b6e4ca' : '#f0b8b8'}`,
                 }}>
                     {mensaje.tipo === 'exito' ? '✓ ' : '⚠ '}{mensaje.texto}
                 </div>
