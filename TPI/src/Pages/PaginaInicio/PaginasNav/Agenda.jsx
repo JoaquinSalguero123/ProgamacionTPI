@@ -34,7 +34,7 @@ const TurnosPage = ({ usuario }) => {
         setTurnos(filtrados);
       })
       .catch(error => console.error(error));
-  }, [usuario]);
+  }, [usuario,turnos]);
   
   const botones = [
     { label: "Todos", value: "todos" },
