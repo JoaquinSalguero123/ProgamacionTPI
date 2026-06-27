@@ -11,6 +11,8 @@ import ReservarTurno from "./Pages/PaginaInicio/PaginasNav/ReservarTurno";
 import Servicios from "./Pages/PaginaInicio/PaginasNav/Servicios";
 import Configuracion from "./Pages/PaginaInicio/PaginasNav/Configuracion";
 import CatalogosPage from "./Pages/PaginaInicio/PaginasNav/Catalogos";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { useAuth } from "./context/AuthContext.jsx";
 
@@ -28,6 +30,14 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          pauseOnHover
+          theme="light"
+        />
+
         <Routes>
 
           {/* PUBLICO */}
@@ -37,7 +47,7 @@ function App() {
           <Route path="/" element={<PaginaPrincipal isSignedIn={isSignedIn} user={user} />}>
 
             <Route index element={<Inicio />} />
-            <Route path="servicios" element={<Servicios />} />
+            <Route path="servicios" element={<Servicios user={user} />}  />	
             <Route path="catalogos" element={<CatalogosPage user={user} />} />
             
             {/* REQUIERE USUARIO */}

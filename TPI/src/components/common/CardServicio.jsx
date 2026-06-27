@@ -1,4 +1,25 @@
-const CardServicio = ({ nombre, descripcion, precio, foto }) => {
+
+
+const CardServicio = ({ id, nombre, descripcion, precio, foto, handleBorrado, handleEditar, blnUsuarioAutorizado }) => {
+  
+  const onClickBorrar = async () => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este servicio?")) return;
+
+    try {
+      await handleBorrado(id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickEditar = async () => {
+    try {
+      handleEditar(id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div
       className="d-flex flex-column rounded-3 overflow-hidden bg-white"
@@ -19,6 +40,7 @@ const CardServicio = ({ nombre, descripcion, precio, foto }) => {
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
+      
       {/* FOTO */}
       <div style={{ aspectRatio: '3/2', overflow: 'hidden' }}>
         <img
@@ -47,6 +69,72 @@ const CardServicio = ({ nombre, descripcion, precio, foto }) => {
           </span>
         </div>
       </div>
+
+        {/* BOTONES */}
+        <div className="d-flex gap-2 mt-3">
+           {blnUsuarioAutorizado && (
+          <>
+          <button
+            onClick={() => onClickEditar(id)}
+            style={{
+              flex: 1,
+              padding: "11px",
+              background: "transparent",
+              border: "1px solid #d1c5b4",
+              borderRadius: "999px",
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: "12px",
+              fontWeight: 600,
+              color: "#7f7667",
+              cursor: "pointer",
+              transition: "all .25s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = "#f5f3ef";
+              e.target.style.borderColor = "#c5a059";
+              e.target.style.color = "#775a19";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "transparent";
+              e.target.style.borderColor = "#d1c5b4";
+              e.target.style.color = "#7f7667";
+            }}
+          >
+            Editar
+          </button>
+          
+          <button
+          onClick={onClickBorrar}
+          style={{
+            flex: 1,
+            padding: "11px",
+            border: "none",
+            borderRadius: "999px",
+            background: "linear-gradient(135deg,#775a19,#c5a059)",
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: "12px",
+            fontWeight: 700,
+            color: "#fff",
+            cursor: "pointer",
+            letterSpacing: "0.06em",
+            boxShadow: "0 4px 16px rgba(119,90,25,.25)",
+            transition: "all .25s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 8px 24px rgba(119,90,25,.35)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 16px rgba(119,90,25,.25)";
+          }}
+        >
+          Eliminar
+        </button>
+        </>
+          )}
+          
+        </div>
     </div>
   );
 };
