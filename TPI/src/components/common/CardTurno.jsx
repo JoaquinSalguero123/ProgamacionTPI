@@ -9,14 +9,9 @@ const estados = {
   3: { texto: "Finalizado", color: "primary" }
 };
 
-const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, precio_servicio, nombre_estilista, estado, usuario }) => {
+const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, precio_servicio, nombre_estilista, estado, usuario, actualizarTurnos }) => {
 
   const [estadoActual, setEstadoActual] = useState(estado);
-
-  const diaMes = new Date(fecha + "T00:00:00").toLocaleDateString("es-AR", {
-    day: "2-digit",
-    month: "2-digit"
-});
 
   const estadoInfo = estados[estadoActual] || { texto: "Desconocido", color: "dark" };
 
@@ -33,6 +28,7 @@ const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, pre
 
       if (res.ok) {
         setEstadoActual(3);
+        actualizarTurnos();
       } else {
         toast.error("Error al actualizar el turno.");
       }
@@ -42,51 +38,53 @@ const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, pre
   };
 
   const aceptarTurno = async () => {
-  try {
-    const res = await fetch(`http://localhost:3000/turnos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("Token")}`,
-      },
-      body: JSON.stringify({ estado: 1 }),
-    });
+    try {
+      const res = await fetch(`http://localhost:3000/turnos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+        },
+        body: JSON.stringify({ estado: 1 }),
+      });
 
-    if (res.ok) {
-      setEstadoActual(1);
-    } else {
-      toast.error("Error al aceptar el turno.");
+      if (res.ok) {
+        setEstadoActual(1);
+        actualizarTurnos();
+      } else {
+        toast.error("Error al aceptar el turno.");
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   const rechazarTurno = async () => {
-  try {
-    const res = await fetch(`http://localhost:3000/turnos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("Token")}`,
-      },
-      body: JSON.stringify({ estado: 2 }),
-    });
+    try {
+      const res = await fetch(`http://localhost:3000/turnos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+        },
+        body: JSON.stringify({ estado: 2 }),
+      });
 
-    if (res.ok) {
-      setEstadoActual(2);
-    } else {
-      toast.error("Error al rechazar el turno.");
+      if (res.ok) {
+        setEstadoActual(2);
+        actualizarTurnos();
+      } else {
+        toast.error("Error al rechazar el turno.");
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   return (
     <div
-      className="d-flex gap-3 p-3 rounded-3 border bg-white"
-      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+      className="d-flex gap-3 p-3 rounded-3 border"
+      style={{ cursor: 'pointer', transition: 'all 0.2s', backgroundColor: estado === 3 || estado === 2 ? 'rgba(129, 129, 129, 0.27)' : 'white' }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = '#c5a059';
         e.currentTarget.style.boxShadow = '0 8px 28px rgba(119,90,25,0.1)';
@@ -114,7 +112,7 @@ const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, pre
             ${precio_servicio}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
-            Fecha: {diaMes} a las {hora_turno}
+            Fecha: {fecha} a las {hora_turno}
           </span>
           <span className="badge bg-light text-secondary fw-bold text-uppercase" style={{ letterSpacing: '0.08em' }}>
             Estilista: {nombre_estilista}
@@ -130,63 +128,69 @@ const CardTurno = ({ id, fecha, hora_turno, nombre_cliente, nombre_servicio, pre
           <span className="small text-secondary">{estadoInfo.texto}</span>
         </div>
 
+        {/* SI HAY USUARIO, ES ADMIN/SUPERADMIN Y EL TURNO ESTA EN PENDIENTE -> MUESTRA LOS BOTONES */}
         {(usuario?.role === 1 || usuario?.role === 2) && estadoActual === 0 && (
-  <div className="d-flex gap-2 mt-2">
-    <button
-      onClick={aceptarTurno}
-      className="border-0"
-      style={{
-        padding: "6px 16px",
-        borderRadius: "999px",
-        background: "linear-gradient(to right, #1a6b2f, #4caf70)",
-        color: "white",
-        fontSize: "10px",
-        fontWeight: 700,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        cursor: "pointer",
-      }}
-    >
-      Aceptar
-    </button>
-    
-    <button
-      onClick={rechazarTurno}
-      className="border-0"
-      style={{
-        padding: "6px 16px",
-        borderRadius: "999px",
-        background: "linear-gradient(to right, #ba1a1a, #e05555)",
-        color: "white",
-        fontSize: "10px",
-        fontWeight: 700,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        cursor: "pointer",
-      }}
-    >
-      Rechazar
-    </button>
 
-    <button
-      onClick={finalizarTurno}
-      className="border-0"
-      style={{
-        padding: "6px 16px",
-        borderRadius: "999px",
-        background: "linear-gradient(to right, #775a19, #c5a059)",
-        color: "white",
-        fontSize: "10px",
-        fontWeight: 700,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        cursor: "pointer",
-      }}
-    >
-      Finalizado
-    </button>
-  </div>
-)}
+          <div className="d-flex gap-2 mt-2">
+
+            {/* BOTON ACEPTAR TURNO */}
+            <button
+              onClick={aceptarTurno}
+              className="border-0"
+              style={{
+                padding: "6px 16px",
+                borderRadius: "999px",
+                background: "linear-gradient(to right, #1a6b2f, #4caf70)",
+                color: "white",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+              }}
+            >
+              Aceptar
+            </button>
+
+            {/* BOTON RECHAZAR TURNO */}
+            <button
+              onClick={rechazarTurno}
+              className="border-0"
+              style={{
+                padding: "6px 16px",
+                borderRadius: "999px",
+                background: "linear-gradient(to right, #ba1a1a, #e05555)",
+                color: "white",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+              }}
+            >
+              Rechazar
+            </button>
+
+            {/* BOTON FINALIZAR TURNO */}
+            <button
+              onClick={finalizarTurno}
+              className="border-0"
+              style={{
+                padding: "6px 16px",
+                borderRadius: "999px",
+                background: "linear-gradient(to right, #775a19, #c5a059)",
+                color: "white",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+              }}
+            >
+              Finalizado
+            </button>
+          </div>
+        )}
 
       </div>
     </div>

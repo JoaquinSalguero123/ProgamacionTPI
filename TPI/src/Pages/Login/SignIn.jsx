@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { normalizeEmail } from "../../context/normalizers.js";
 
 const SignIn = ({ setSignedUp }) => {
   const [email, setEmail] = useState("");
@@ -42,7 +43,7 @@ const SignIn = ({ setSignedUp }) => {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ email: email, password: password }),
+      body: JSON.stringify({ email: normalizeEmail(email), password: password }),
     })
       .then((res) => {
         if (!res.ok) {

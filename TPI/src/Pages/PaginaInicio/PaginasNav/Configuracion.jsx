@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { normalizeName, normalizePhoneAR } from '../../../context/normalizers';
+
 
 const Configuracion = ({ Usuario }) => {
     const navigate = useNavigate();
@@ -9,6 +11,7 @@ const Configuracion = ({ Usuario }) => {
         telefono: '',
         password: '',
     });
+    const [dataOriginal, setDataOriginal] = useState(null);
     const [confirmarPassword, setConfirmarPassword] = useState('');
     const [loading, setLoading] = useState(true);
     const [guardando, setGuardando] = useState(false);
@@ -35,6 +38,7 @@ const Configuracion = ({ Usuario }) => {
                     telefono: data.telefono ?? '',
                     password: '',
                 });
+                setDataOriginal(data);
             })
             .catch(() => {
                 setMensaje({ tipo: 'error', texto: 'No se pudieron cargar los datos del usuario.' });
@@ -47,21 +51,55 @@ const Configuracion = ({ Usuario }) => {
         setMensaje(null);
     };
 
-    const handleGuardar = async () => {
+    const validar = () => {
+        if (!form.nombreCompleto_usuario.trim()) {
+            return "El nombre no puede estar vacío.";
+        }
         if (form.password && form.password !== confirmarPassword) {
-            setMensaje({ tipo: 'error', texto: 'Las contraseñas no coinciden.' });
+            return "Las contraseñas no coinciden.";
+        }
+        if (form.telefono && !normalizePhoneAR(form.telefono)) {
+            return "El teléfono es inválido.";
+        }
+
+        return null;
+    };
+
+    const handleGuardar = async () => {
+        const error = validar();
+        if (error) {
+            setMensaje({ tipo: 'error', texto: error });
+            return;
+        }
+        
+        const body = {};
+
+        const nombreNormalizado = normalizeName(form.nombreCompleto_usuario);
+        const telefonoNormalizado = form.telefono
+            ? normalizePhoneAR(form.telefono)
+            : null;
+
+        // si el nombre no coincide con el anterior
+        if (nombreNormalizado !== normalizeName(dataOriginal.nombreCompleto_usuario)) {
+            body.nombreCompleto_usuario = nombreNormalizado;
+        }
+        // si el telefono no coincide con el anterior
+        if (telefonoNormalizado !== normalizePhoneAR(dataOriginal.telefono)) {
+            body.telefono = telefonoNormalizado;
+        }
+        // si hay contraseña
+        if (form.password) {
+            body.password = form.password;
+        }
+
+        if (Object.keys(body).length === 0) {
+            setMensaje({ tipo: 'info', texto: 'No hay cambios para guardar.' });
             return;
         }
 
         setGuardando(true);
         setMensaje(null);
 
-        const body = {
-            nombreCompleto_usuario: form.nombreCompleto_usuario,
-            telefono: form.telefono,
-        };
-        if (form.password) body.password = form.password;
-        
         try {
             const res = await fetch(`http://localhost:3000/usuarios/me`, {
                 method: 'PUT',
