@@ -63,7 +63,7 @@ const Header = ({ user, isSignedIn }) => {
             <button onClick={() => navigate("/servicios")} style={getNavStyle("/servicios")}>Servicios</button>
             <button onClick={() => navigate("/catalogos")} style={getNavStyle("/catalogos")}>Catálogo</button>
 
-            {role >= 1 && (
+            {role !== null && (
               <button onClick={() => navigate("/agenda")} style={getNavStyle("/agenda")}>Agenda</button>
             )}
             {role === 2 && (

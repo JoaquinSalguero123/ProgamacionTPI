@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const ReservarTurno = ({ usuario }) => {
   const [selectedStylist, setSelectedStylist] = useState();
@@ -53,43 +54,50 @@ const ReservarTurno = ({ usuario }) => {
   ];
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const diaSemana = new Date(fecha + "T00:00:00").getDay();
-  if (diaSemana === 0 || diaSemana === 1) {
-    toast.error("No atendemos los domingos ni lunes. Por favor elegí otro día.");
-    return;
-  }
+    const diaSemana = new Date(fecha + "T00:00:00").getDay();
+    if (diaSemana === 0 || diaSemana === 1) {
+      toast.error("No atendemos los domingos ni lunes. Por favor elegí otro día.");
+      return;
+    }
 
-  const NuevoTurno = {
-    fecha: fecha,
-    hora_turno: selectedTime,
-    email_cliente: usuario?.email,
-    id_servicio: servicio,
-    email_estilista: peluqueros[selectedStylist]?.email,
-    estado: 0,
+    const NuevoTurno = {
+      fecha: fecha,
+      hora_turno: selectedTime,
+      email_cliente: usuario?.email,
+      id_servicio: servicio,
+      email_estilista: peluqueros[selectedStylist]?.email,
+      estado: 0,
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/turnos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+        },
+        body: JSON.stringify(NuevoTurno),
+      });
+
+      if (res.ok) {
+        setShowModal(true);  // ← SOLO ACÁ
+      } else {
+        toast.error("Error al crear el turno, asegurese de marcar todos los campos.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error de conexión.");
+    }
   };
 
-  try {
-    const res = await fetch("http://localhost:3000/turnos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("Token")}`,
-      },
-      body: JSON.stringify(NuevoTurno),
-    });
+  const navigate = useNavigate();
 
-    if (res.ok) {
-      setShowModal(true);  // ← SOLO ACÁ
-    } else {
-      toast.error("Error al crear el turno, asegurese de marcar todos los campos.");
-    }
-  } catch (err) {
-    console.error(err);
-    toast.error("Error de conexión.");
+  const handleVolver = () => {
+    setShowModal(false)
+    navigate("/agenda")
   }
-};
 
   const sectionStyle = {
     background: "#ffffff",
@@ -321,7 +329,7 @@ const ReservarTurno = ({ usuario }) => {
               Tu turno en nuestra peluquería fue confirmado con éxito, ¡te esperamos!
             </p>
             <button
-              onClick={() => setShowModal(false)}
+              onClick={handleVolver}
               className="w-100"
               style={{
                 padding: "14px",
@@ -339,7 +347,7 @@ const ReservarTurno = ({ usuario }) => {
               onMouseEnter={(e) => { e.currentTarget.style.background = "#775a19"; e.currentTarget.style.color = "white"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#775a19"; }}
             >
-              Volver a la página
+              Ver mi agenda
             </button>
           </div>
         </div>

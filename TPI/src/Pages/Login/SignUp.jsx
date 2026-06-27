@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { normalizeEmail, normalizeName, normalizePhoneAR } from "../../context/normalizers";
 
 const SignUp = ({ setSignedUp }) => {
   const [form, setForm] = useState({
@@ -8,7 +9,7 @@ const SignUp = ({ setSignedUp }) => {
     email: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: "",
+    phoneNumber: "+ 54 9 ",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +30,8 @@ const SignUp = ({ setSignedUp }) => {
       return "La contraseña es obligatoria.";
     if (form.password !== form.confirmPassword)
       return "Las contraseñas no coinciden.";
+    if (form.phoneNumber && !normalizePhoneAR(form.phoneNumber))
+      return "El teléfono ingresado es incorrecto.";
     return null;
   };
 
@@ -44,11 +47,11 @@ const SignUp = ({ setSignedUp }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: form.email.trim(),
-          nombreCompleto_usuario: form.name.trim(),
+          email: normalizeEmail(form.email),
+          nombreCompleto_usuario: normalizeName(form.name),
           id_permisos: 0,
           password: form.password,
-          telefono: form.phoneNumber.trim() || null,
+          telefono: normalizePhoneAR(form.phoneNumber) || null,
         }),
       });
 
@@ -151,9 +154,10 @@ const SignUp = ({ setSignedUp }) => {
                   {showConfirm ? "👁" : "🔒"}
                 </button>
               </div>
-              {form.confirmPassword && form.password !== form.confirmPassword && (
-                <small className="text-danger mt-1 d-block">Las contraseñas no coinciden</small>
-              )}
+              <small
+                className="text-danger mt-1 d-block"
+                style={{ visibility: form.confirmPassword && form.password !== form.confirmPassword ? "visible" : "hidden" }}
+              >Las contraseñas no coinciden</small>
             </div>
 
             <div>

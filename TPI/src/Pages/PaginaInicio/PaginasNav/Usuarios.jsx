@@ -1,5 +1,7 @@
 import { useState } from "react";
 import CardUsuario from "../../../components/common/CardUsuario";
+import { normalizeName, normalizePhoneAR } from "../../../context/normalizers";
+
 
 const API = "http://localhost:3000";
 const getToken = () => localStorage.getItem("Token");
@@ -17,6 +19,12 @@ const ModalEditar = ({ usuario, onClose, onGuardado }) => {
     password: "",
     telefono: usuario.telefono ?? "",
   });
+  const [dataOriginal, setDataOriginal] = useState({
+    nombreCompleto_usuario: usuario.nombreCompleto_usuario ?? "",
+    id_permisos: usuario.id_permisos ?? 0,
+    password: "",
+    telefono: usuario.telefono ?? "",
+  });
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
 
@@ -26,27 +34,62 @@ const ModalEditar = ({ usuario, onClose, onGuardado }) => {
   };
 
   const handleGuardar = async () => {
-    setCargando(true);
-    setError(null);
-    try {
-      const body = { ...form, id_permisos: Number(form.id_permisos) };
-      if (!body.password) delete body.password;
-      const res = await fetch(`${API}/usuarios/${encodeURIComponent(usuario.email)}`, {
-        method: "PUT",
-        headers: authHeaders(),
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? "Error al guardar");
-      }
-      onGuardado(await res.json());
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setCargando(false);
+  setCargando(true);
+  setError(null);
+
+  try {
+    const body = {};
+
+    const nombreNormalizado = normalizeName(form.nombreCompleto_usuario);
+    const telefonoNormalizado = form.telefono
+      ? normalizePhoneAR(form.telefono)
+      : null;
+
+    // comparar nombre
+    if (nombreNormalizado !== normalizeName(dataOriginal.nombreCompleto_usuario)) {
+      body.nombreCompleto_usuario = nombreNormalizado;
     }
-  };
+
+    // comparar telefono
+    if (telefonoNormalizado !== normalizePhoneAR(dataOriginal.telefono)) {
+      body.telefono = telefonoNormalizado;
+    }
+
+    // permisos (solo si cambia)
+    if (Number(form.id_permisos) !== dataOriginal.id_permisos) {
+      body.id_permisos = Number(form.id_permisos);
+    }
+
+    // password
+    if (form.password) {
+      body.password = form.password;
+    }
+
+    // nada para actualizar
+    if (Object.keys(body).length === 0) {
+      setError("No hay cambios para guardar");
+      return;
+    }
+
+    const res = await fetch(`${API}/usuarios/${encodeURIComponent(usuario.email)}`, {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error ?? "Error al guardar");
+    }
+
+    onGuardado(await res.json());
+
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setCargando(false);
+  }
+};
 
   const inp = {
     fontFamily: "'Manrope', sans-serif",

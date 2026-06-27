@@ -4,16 +4,21 @@ import CardTurno from "../../../components/common/CardTurno";
 const TurnosPage = ({ usuario }) => {
   const [turnos, setTurnos] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [actualizar, setActualizar] = useState(false);
 
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
 
   const turnosFiltrados = turnos
-    .filter(turno => new Date(turno.fecha + "T00:00:00") >= hoy)
     .filter(turno => {
       if (filtroEstado === "todos") return true;
       return turno.estado === Number(filtroEstado);
     });
+
+
+  const handleActualizar = () => {
+    setActualizar(prev => !prev)
+  }
 
   useEffect(() => {
     fetch("http://localhost:3000/turnos", {
@@ -23,19 +28,25 @@ const TurnosPage = ({ usuario }) => {
     })
       .then(res => res.json())
       .then(data => {
-        let filtrados = data;
-
-        if (usuario?.role === 0) {
-          filtrados = data.filter(t => t.email_cliente === usuario.email);
-        } else if (usuario?.role === 1) {
-          filtrados = data.filter(t => t.email_estilista === usuario.email);
-        }
-
-        setTurnos(filtrados);
+        setTurnos(data);
       })
       .catch(error => console.error(error));
-  }, [usuario,turnos]);
-  
+  }, [actualizar, filtroEstado]); // se llama al actualizar cualquier turno y al cambiar el filtro
+
+
+  const formatearDiaMes = (fecha) => {
+    if (!fecha) return "A disposición";
+
+    const f = new Date(fecha + "T00:00:00");
+
+    if (isNaN(f.getTime())) return "Fecha inválida";
+
+    return f.toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit"
+    });
+  };
+
   const botones = [
     { label: "Todos", value: "todos" },
     { label: "Pendientes", value: "0" },
@@ -87,14 +98,15 @@ const TurnosPage = ({ usuario }) => {
           <CardTurno
             key={turno.id}
             id={turno.id}
-            fecha={turno.fecha}
-            hora_turno={turno.hora_turno}
-            nombre_cliente={turno.cliente.nombreCompleto_usuario}
-            nombre_servicio={turno.servicio.nombre_servicio}
-            precio_servicio={turno.servicio.precio}
-            nombre_estilista={turno.estilista.nombreCompleto_usuario}
-            estado={turno.estado}
+            fecha={formatearDiaMes(turno.fecha)}
+            hora_turno={turno?.hora_turno || "A disposición"}
+            nombre_cliente={turno.cliente?.nombreCompleto_usuario || "Sin cliente"} // no debería
+            nombre_servicio={turno.servicio?.nombre_servicio || "A disposición"}
+            precio_servicio={turno.servicio?.precio || "A disposición"}
+            nombre_estilista={turno.estilista?.nombreCompleto_usuario || "Sin estilista"} // no debería
+            estado={turno?.estado || 0}
             usuario={usuario}
+            actualizarTurnos={handleActualizar}
           />
         ))
       )}
